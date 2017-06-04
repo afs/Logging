@@ -16,23 +16,30 @@
  * limitations under the License.
  */
 
-package logging;
+package logging.jul;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.util.logging.LogRecord ;
+import java.util.logging.StreamHandler ;
 
-/** Utilities */
-/*package*/ class PkgLib {
-    /*package*/ static void exception(IOException ex) {
-        throw new RuntimeException(ex);
+/** A handler and formatter for unadorned output to stdout.
+ * Example: NCSA Format logging in Fuseki already formats the whole line 
+ * 
+ * <pre>
+ * org.apache.jena.fuseki.Request.level=INFO
+ * org.apache.jena.fuseki.Request.useParentHandlers=false
+ * org.apache.jena.fuseki.Request.handlers=logging.FlatHandler
+ * </pre>
+ * @see FlatFormatter
+ */
+public class FlatHandler extends StreamHandler {
+    
+    public FlatHandler() { 
+        super(System.out, new FlatFormatter(true)) ;
     }
     
-    /*package*/ static byte[] asUTF8bytes(String s)
-    {
-        try { return s.getBytes("UTF-8"); }
-        catch (UnsupportedEncodingException ex)
-        { throw new RuntimeException("UTF-8 not supported!"); } 
+    @Override
+    public void publish(LogRecord record) {
+        super.publish(record);
+        flush();
     }
-
-
 }

@@ -16,23 +16,32 @@
  * limitations under the License.
  */
 
-package logging;
+package logging.jul;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat ;
+import java.util.logging.Formatter ;
+import java.util.logging.LogRecord ;
 
-/** Utilities */
-/*package*/ class PkgLib {
-    /*package*/ static void exception(IOException ex) {
-        throw new RuntimeException(ex);
-    }
+/** Very simple formatter - just the log message.
+ * @see FlatHandler
+ */ 
+public class FlatFormatter extends Formatter {
+
+    private final boolean ensureNL ;
+
+    public FlatFormatter() { this(true) ; }
     
-    /*package*/ static byte[] asUTF8bytes(String s)
-    {
-        try { return s.getBytes("UTF-8"); }
-        catch (UnsupportedEncodingException ex)
-        { throw new RuntimeException("UTF-8 not supported!"); } 
+    public FlatFormatter(boolean ensureNewline) {
+        this.ensureNL = ensureNewline ;
     }
 
-
+    @Override
+    public String format(LogRecord record) {
+        String message = record.getMessage() ;
+        if ( record.getParameters() != null )
+            message = MessageFormat.format(message, record.getParameters()) ;
+        if ( ensureNL && ! message.endsWith("\n") )
+            message = message + "\n" ;
+        return message ;                 
+    }
 }

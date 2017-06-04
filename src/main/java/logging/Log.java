@@ -92,22 +92,32 @@ public class Log {
         log(cls).warn(msg, th) ;
     }
 
+    /** @deprecated Use {@code error}. */
+    @Deprecated
     static public void fatal(Object caller, String msg) {
         fatal(caller.getClass(), msg) ;
     }
 
+    /** @deprecated Use {@code error}. */
+    @Deprecated
     static public void fatal(Class<? > cls, String msg) {
         log(cls).error(msg) ;
     }
 
+    /** @deprecated Use {@code error}. */
+    @Deprecated
     static public void fatal(Object caller, String msg, Throwable th) {
         fatal(caller.getClass(), msg, th) ;
     }
 
+    /** @deprecated Use {@code error}. */
+    @Deprecated
     static public void fatal(Class<? > cls, String msg, Throwable th) {
         log(cls).error(msg, th) ;
     }
 
+    /** @deprecated Use {@code error}. */
+    @Deprecated
     static public void fatal(String caller, String msg) {
         log(caller).error(msg) ;
     }
@@ -132,4 +142,5 @@ public class Log {
                 warningsDone.remove(MAX_TRACK);
         }
     }
+
 }

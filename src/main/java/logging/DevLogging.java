@@ -18,12 +18,24 @@
 
 package logging;
 
-import logging.LoggingSetup.*;
+import logging.LoggingSetup.LoggingSetupLog4j;
+import org.slf4j.impl.StaticLoggerBinder;
 
 public class DevLogging {
 
+    // Logging defaults : copy over Jena atlas base code [DONE]
+    
+    // Example / current jena
+    static { 
+        final StaticLoggerBinder binder = StaticLoggerBinder.getSingleton();
+        final String clsName = binder.getLoggerFactoryClassStr();
+        if ( clsName.contains("JDK14LoggerFactory") )
+            ; // LogCtl.setJavaLoggingDft(); 
+        else if ( clsName.contains("Log4jLoggerFactory") )
+            ; //LogCtl.setLog4j(); 
+    }
+    
     // Migrate and clean up:
-    // org.apache.jena.atlas.logging.java
     
 //    public static void main(String...a) {
 //        org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("LOGGER") ;

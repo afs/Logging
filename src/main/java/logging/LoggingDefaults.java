@@ -18,6 +18,8 @@
 
 package logging;
 
+import logging.jul.ConsoleHandlerStream;
+
 /** 
  * Default settings for logging (JUL, Log4j v1).
  * Better to set explicitly. 
@@ -34,12 +36,14 @@ public class LoggingDefaults {
           ,"log4j.rootLogger=INFO, jena.plainlevel"
            );
     
+    private static final String nameConsoleHandlerStream = ConsoleHandlerStream.class.getName();
+    
     /** Default logging setup when using java.util.logging (JUL) */
     public static final String defaultJUL = String.join("\n",
-        "handlers=org.apache.jena.atlas.logging.java.ConsoleHandlerStream"
+        "handlers="+nameConsoleHandlerStream
          // These are the defaults in ConsoleHandlerStream
-         //,"org.apache.jena.atlas.logging.java.ConsoleHandlerStream.level=INFO"
-         //,"org.apache.jena.atlas.logging.java.ConsoleHandlerStream.formatter=org.apache.jena.atlas.logging.java.TextFormatter"
-         //,"org.apache.jena.atlas.logging.java.TextFormatter.format=%5$tT %3$-5s %2$-20s :: %6$s"
+         //,"logging.jul.ConsoleHandlerStream.level=INFO"
+         //,"logging.jul.ConsoleHandlerStream.formatter=org.apache.jena.atlas.logging.java.TextFormatter"
+         //,"logging.jul.TextFormatter.format=%5$tT %3$-5s %2$-20s :: %6$s"
          );
 }

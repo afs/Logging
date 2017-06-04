@@ -28,8 +28,8 @@ import static logging.PkgLib.*;
  * <ol>
  * <li>Is logging already initialized? (test the system property).
  * <li>Use file:{config} (for appropriate {config} name).
- * <li>Look on the classpath: {config} as a java resource
- * <li>Look on the classpath: ...path.../{config} as a java resource
+ * <li>Look on the classpath:{config} as a java resource
+ * <li>Look on the classpath:{PathBase}/{config} as a java resource
  * <li>Use a default string.
  * </ol>
  */
@@ -46,14 +46,16 @@ public abstract class LoggingSetup {
     }
     
     /**
-     * Switch off logging setting. Used by the embedded server so that the application's
+     * Switch off logging setting. Used so that an application's
      * logging setup is not overwritten.
      */
     public static synchronized void allowLoggingReset(boolean value) {
         allowLoggingReset = value;
     }
 
-    private static String pathBase  = "org/apache/jena/";
+    // Classpath resource  to look in for logging implementation configuration files 
+    // (log4j.properties, logging.properties).
+    private static String pathBase  = "log-conf/";
 
     /**
      * Get the path used to lookup a {config} file.
@@ -64,10 +66,12 @@ public abstract class LoggingSetup {
 
     /**
      * Set the path used to lookup a {config} file. This is the resource path, the file is
-     * "path/{config}".
+     * "path/{config}". 
+     * Must be called before {@link #setLogging()}.
+     * Set to null for don't look 
      */
     public static void setPathBase(String string) {
-        if ( !string.endsWith("/") )
+        if ( string != null && !string.endsWith("/") )
             string = string + "/";
         pathBase = string;
     }
@@ -78,6 +82,7 @@ public abstract class LoggingSetup {
         return theLoggingSetup;
     }
 
+    /** Setup logging */
     public static synchronized void setLogging() {
         if ( !allowLoggingReset )
             return;
@@ -95,15 +100,15 @@ public abstract class LoggingSetup {
         boolean hasLog4j = checkForLog4J();
         boolean hasJUL = checkForJUL();
         if ( hasLog4j && hasJUL ) {
-            logAlways("Found both Log4j and JUL setup for SLF4J; using Log4j");
-            // Force SLF4J
+            logAlways("Found both Log4j and JUL setup for slf4j; using Log4j");
+            hasJUL = false;
         } else if ( !hasLog4j && !hasJUL ) {
             // Do nothing - hope logging gets initialized automatically. e.g. logback.
             // In some ways this is the preferred outcome for the war file.
             //
             // The standalone server we have to make a decision and it is better
             // if it uses the predefined format.
-            logLogging("Neither Log4j nor JUL setup for SLF4J");
+            logLogging("Neither Log4j nor JUL setup for slf4j");
             return;
         }
 

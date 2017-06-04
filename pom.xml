@@ -14,32 +14,17 @@
   <description>Logging</description>
 
   <properties>
-    <ver.jena>3.1.1</ver.jena>
-    <!-- <ver.fuseki>2.4.1</ver.fuseki> -->
-    <ver.slf4j>1.7.21</ver.slf4j>
+    <ver.slf4j>1.7.25</ver.slf4j>
     <ver.log4j>1.2.17</ver.log4j>
   </properties>
 
   <dependencies>
   
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-base</artifactId>
-      <version>${ver.jena}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-        <version>${ver.slf4j}</version>
+      <version>${ver.slf4j}</version>
     </dependency>
 
     <!-- Java.util.logging : Choose one -->
@@ -48,6 +33,7 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
       <version>${ver.slf4j}</version>
+      <optional>true</optional>
     </dependency>
     <!-- -->
 
@@ -56,6 +42,7 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>${ver.slf4j}</version>
+      <optional>true</optional>
     </dependency>
     -->
 
@@ -64,6 +51,7 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>${ver.log4j}</version>
+      <optional>true</optional>
     </dependency>
 
     <!--
@@ -71,8 +59,16 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>${ver.slf4j}</version>
+      <optional>true</optional>
     </dependency>
     -->
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
