@@ -23,8 +23,8 @@
  * including in production, rather than for audit or applciation monitoring.
  * 
  * <ul>
- * <li>{@link logging.LogCtl} -- Change logging levels during runtime (e.g. development)
  * <li>{@link logging.LogFmt} -- Formatted logging using java's printf style formats.
+ * <li>{@link logging.LogCtl} -- Change logging levels during runtime (e.g. development)
  * <li>{@link logging.LoggingSetup} -- More general logging setup, with configuration from
  * file, classpath or a default.
  * <li>{@link logging.Log} -- static logging calls for convenient inclusion of a few

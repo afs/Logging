@@ -33,6 +33,4 @@ import java.io.UnsupportedEncodingException;
         catch (UnsupportedEncodingException ex)
         { throw new RuntimeException("UTF-8 not supported!"); } 
     }
-
-
 }

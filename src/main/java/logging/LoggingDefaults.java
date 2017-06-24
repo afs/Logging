@@ -28,22 +28,23 @@ public class LoggingDefaults {
     /** Default logging setup when using log4j */ 
     public static final String defaultLog4j = String.join("\n", 
           "## Plain output with level, to stderr"
-          ,"log4j.appender.jena.plainlevel=org.apache.log4j.ConsoleAppender"
-          ,"log4j.appender.jena.plainlevel.target=System.out"
-          ,"log4j.appender.jena.plainlevel.layout=org.apache.log4j.PatternLayout"
-          ,"log4j.appender.jena.plainlevel.layout.ConversionPattern=%-5p %m%n"
+          ,"log4j.appender.plain=org.apache.log4j.ConsoleAppender"
+          ,"log4j.appender.plain.target=System.out"
+          ,"log4j.appender.plain.layout=org.apache.log4j.PatternLayout"
+          ,"log4j.appender.plain.layout.ConversionPattern=%d{HH:mm:ss} %-5p %-20c{1} :: %m%n"
           ,"## Everything"
-          ,"log4j.rootLogger=INFO, jena.plainlevel"
+          ,"log4j.rootLogger=INFO, plain"
            );
     
     private static final String nameConsoleHandlerStream = ConsoleHandlerStream.class.getName();
     
     /** Default logging setup when using java.util.logging (JUL) */
-    public static final String defaultJUL = String.join("\n",
-        "handlers="+nameConsoleHandlerStream
-         // These are the defaults in ConsoleHandlerStream
-         //,"logging.jul.ConsoleHandlerStream.level=INFO"
-         //,"logging.jul.ConsoleHandlerStream.formatter=org.apache.jena.atlas.logging.java.TextFormatter"
-         //,"logging.jul.TextFormatter.format=%5$tT %3$-5s %2$-20s :: %6$s"
-         );
+    public static final String defaultJUL = String.join
+        ("\n"
+        ,"handlers="+nameConsoleHandlerStream
+        // These are the defaults in ConsoleHandlerStream
+        //,"logging.jul.ConsoleHandlerStream.level=INFO"
+        //,"logging.jul.ConsoleHandlerStream.formatter=logging.jul.TextFormatter"
+        //,"logging.jul.TextFormatter.format=%5$tT %3$-5s %2$-20s :: %6$s"
+        );
 }

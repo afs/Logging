@@ -359,6 +359,7 @@ public abstract class LoggingSetup {
 
         @Override
         protected void initFromInputStream(InputStream inputStream) throws IOException {
+            //calls getLogManager().reset();
             java.util.logging.LogManager.getLogManager().readConfiguration(inputStream);
         }
 

@@ -18,6 +18,7 @@
 
 package logging;
 
+import logging.LoggingSetup.LoggingSetupJUL;
 import logging.LoggingSetup.LoggingSetupLog4j;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -48,22 +49,36 @@ public class DevLogging {
 //          // org.slf4j.impl.Log4jLoggerAdapater or org.slf4j.impl.JDK14LoggerAdapter
 //          // Except too late!
 
+        LoggingSetup.logSetup(true);
         LoggingSetup.setLogging() ;
         org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("LOGGER") ;
         x.info("Info");
+        System.out.println();
+        System.err.println();
+        System.err.flush();
+        System.out.flush();
+        LoggingSetup.allowLoggingReset(true);
         
-        //LoggingSetup.setLogging() ;
-        // Dev - direct to JUL.
-        if ( true ) {
-            //new LoggingSetupJUL().setup();
-            java.util.logging.Logger LOG = java.util.logging.Logger.getLogger("LOGGER") ;
-            LOG.info("Information1:JUL");
-        }
         // Dev - direct to Log4j.
-        if ( false ) {
-            new LoggingSetupLog4j().setup();
+        if ( true ) {
+            new LoggingSetupLog4j()
+                .setup();
             org.apache.log4j.Logger LOG1 = org.apache.log4j.Logger.getLogger("LOGGER") ;
             LOG1.info("Information2:L4J");
         }
+        // Dev - direct to JUL.
+        if ( true ) {
+            // Re-initializing JUL does not work - in fact, it turns everything off.
+            new LoggingSetupJUL()
+                .setup();
+            java.util.logging.Logger LOG = java.util.logging.Logger.getLogger("LOGGER") ;
+            LOG.info("Information1:JUL");
+        }
+
+        org.slf4j.Logger x1 = org.slf4j.LoggerFactory.getLogger("LOGGER1") ;
+        x1.info("Info");
+        System.err.flush();
+        System.out.flush();
+
     }
 }
