@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory ;
  * <p>
  * Also support: Class object instead of logger to help ad hoc usage.
  */
-public class FmtLog {
+public class LogFmt {
     /* Log at 'trace' level. */
     public static void trace(Logger log, String fmt, Object...args) {
         if ( log.isTraceEnabled() )

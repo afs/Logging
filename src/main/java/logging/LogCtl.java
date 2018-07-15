@@ -32,7 +32,7 @@ import org.slf4j.Logger ;
  * <li>"error"
  * <li>"off" 
  * </ul>
- * @see FmtLog 
+ * @see LogFmt 
  */
 
 public class LogCtl {

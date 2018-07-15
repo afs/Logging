@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory ;
 /** Simple wrappers and operations for convenient, non-time critical logging,
  * when coding needs just a few log messages in the code 
  * (e.g. warning and errors, or during delevopment). 
- * @see FmtLog
+ * @see LogFmt
  */
 public class Log {
     private Log() {}
