@@ -34,10 +34,10 @@ import java.util.logging.* ;
  * </ul>
  * Example:
  * <pre>
- * handlers=logging..jul.ConsoleHandlerStream</pre>
+ * handlers=logging.jul.ConsoleHandlerStream</pre>
  * or to configure the formatter as well:
  * <pre>
- * handlers=logging..jul.ConsoleHandlerStream
+ * handlers=logging.jul.ConsoleHandlerStream
  * logging.jul.TextFormatter.format = %5$tT %3$-5s %2$-20s -- %6$s</pre>
  */
 public class ConsoleHandlerStream extends StreamHandler {
@@ -48,12 +48,16 @@ public class ConsoleHandlerStream extends StreamHandler {
     // We need to chose the output in the constructor and ConsoleHandler does not allow that,
     // hence going straight to StreamHandler and having to provide the functionality here. 
     
+    boolean closeOnClose = true;
+    
     public ConsoleHandlerStream() {
         this(System.out) ;
     }
     
     public ConsoleHandlerStream(OutputStream outputStream) {
         super(outputStream, new TextFormatter()) ;
+        if ( outputStream == System.err || outputStream == System.out )
+            closeOnClose = false;
         
         LogManager manager = LogManager.getLogManager();
         ClassLoader classLoader = ClassLoader.getSystemClassLoader() ;
@@ -111,5 +115,13 @@ public class ConsoleHandlerStream extends StreamHandler {
     public void publish(LogRecord record) {
         super.publish(record);
         flush();
+    }
+    
+    @Override
+    public void close() throws SecurityException {
+       if ( closeOnClose )
+           super.close();
+       else
+           super.flush();
     }
 }
