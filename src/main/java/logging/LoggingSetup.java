@@ -35,8 +35,6 @@ import static logging.PkgLib.*;
  */
 
 public abstract class LoggingSetup {
-    /** Set up logging - standalone and war packaging */
-
     private static boolean logLogging         = false;
     private static boolean loggingInitialized = false;
     private static boolean allowLoggingReset  = true;
