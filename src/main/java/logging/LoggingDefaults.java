@@ -42,6 +42,7 @@ public class LoggingDefaults {
     public static final String defaultJUL = String.join
         ("\n"
         ,"handlers="+nameConsoleHandlerStream
+        ,".level=INFO"
         // These are the defaults in ConsoleHandlerStream
         //,"logging.jul.ConsoleHandlerStream.level=INFO"
         //,"logging.jul.ConsoleHandlerStream.formatter=logging.jul.TextFormatter"

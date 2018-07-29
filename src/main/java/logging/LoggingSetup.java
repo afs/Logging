@@ -41,7 +41,7 @@ public abstract class LoggingSetup {
     private static boolean loggingInitialized = false;
     private static boolean allowLoggingReset  = true;
 
-    public static  void logSetup(boolean value) {
+    public static  void logLoggingSetup(boolean value) {
         logLogging = value;
     }
     
@@ -350,7 +350,6 @@ public abstract class LoggingSetup {
 
     /** java.util.logging (JUL) setup */
     static class LoggingSetupJUL extends LoggingSetup {
-        // Double initialization of JUL seesm to loose loggers. 
         
         @Override
         protected String getDisplayName() {
@@ -359,7 +358,8 @@ public abstract class LoggingSetup {
 
         @Override
         protected void initFromInputStream(InputStream inputStream) throws IOException {
-            //calls getLogManager().reset();
+            //calls getLogManager().reset() closes handlers
+            // logging.ConsoleHandlerStream.reset() stops this. 
             java.util.logging.LogManager.getLogManager().readConfiguration(inputStream);
         }
 
