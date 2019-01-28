@@ -1,4 +1,4 @@
-== Logging setup
+## Logging setup
 
 This package provides additional facilities around use of slf4j:
 
