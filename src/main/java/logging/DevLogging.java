@@ -111,7 +111,7 @@ public class DevLogging {
             new LoggingSetupLog4j()
                 .setup();
             org.apache.log4j.Logger LOG1 = org.apache.log4j.Logger.getLogger("LOG4J1") ;
-            LOG1.info("Information:L4J");
+            LOG1.info("Information:L4J1");
         }
         // Dev - direct to JUL.
         if ( true ) {

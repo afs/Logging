@@ -23,8 +23,8 @@ import java.net.URL;
 import static logging.PkgLib.*;
 
 /**
- * Set logging. Configuration for logging is chosen based on following steps until one
- * succedes.
+ * Set logging. Configuration for logging is chosen based on following steps
+ * until one succeeds.
  * <ol>
  * <li>Is logging already initialized? (test the system property).
  * <li>Use file:{config} (for appropriate {config} name).

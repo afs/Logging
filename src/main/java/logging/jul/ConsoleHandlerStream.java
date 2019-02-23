@@ -21,7 +21,8 @@ package logging.jul;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream ;
-import java.nio.charset.StandardCharsets ;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.* ;
 
 /** Console handler that modifies {@link java.util.logging.ConsoleHandler}.
@@ -62,27 +63,37 @@ public class ConsoleHandlerStream extends StreamHandler {
     }
     
     public ConsoleHandlerStream(OutputStream outputStream) {
+        // default Level.INFO 
         super(protectStdOutput(outputStream), new TextFormatter()) ;
+        // Change default to all.
+        // This avoid the effect of not getting sub-INFO output when no level is set.
+        setLevel(Level.ALL);
         
         LogManager manager = LogManager.getLogManager();
         ClassLoader classLoader = ClassLoader.getSystemClassLoader() ;
         String cname = getClass().getName();
         
+        // Necessary, because Handler set defaults  
+        // which causes it to ignore "formatter" setting.
+        // (Level and Filter are actually OK as is.)
+        
         // -- Level
-        Level level = Level.INFO ;
-        String pLevel = getProperty(manager, cname, "level") ;
+        Level level = Level.INFO;
+        String pLevel = getProperty(manager, cname, ".level") ;
         if ( pLevel != null )
             level = Level.parse(pLevel) ;
         setLevel(level);
         
         // -- Formatter
-        // The default is TextFormatter above
-        // (we had to pass a Formatter of some kind to super(,)).
-        String pFormatter = getProperty(manager, cname, "formatter") ;
+        // Necessary, because we gave a default to Handler in super()
+        // which causes it to ignore "formatter" setting.
+        String pFormatter = getProperty(manager, cname, ".formatter") ;
         if ( pFormatter != null ) {
             try {
                 Class<?> cls = classLoader.loadClass(pFormatter);
-                setFormatter((Formatter) cls.newInstance());
+                @SuppressWarnings("deprecation")
+                Formatter fmt = (Formatter)cls.newInstance();
+                setFormatter(fmt);
             } catch (Exception ex) {
                 System.err.println("Problems setting the logging formatter") ;
                 ex.printStackTrace(System.err);
@@ -90,11 +101,13 @@ public class ConsoleHandlerStream extends StreamHandler {
         }
         
         // -- Filter
-        String pFilter = getProperty(manager, cname, "filter") ;
+        String pFilter = getProperty(manager, cname, ".filter") ;
         if ( pFilter != null ) {
             try {
                 Class<?> cls = classLoader.loadClass(pFilter);
-                setFilter((Filter) cls.newInstance());
+                @SuppressWarnings("deprecation")
+                Filter filter = (Filter) cls.newInstance();
+                setFilter(filter);
             } catch (Exception ex) {
                 System.err.println("Problems setting the logging filter") ;
                 ex.printStackTrace(System.err);
@@ -113,7 +126,9 @@ public class ConsoleHandlerStream extends StreamHandler {
     }
     
     private static String getProperty(LogManager manager, String cname, String pname) {
-        return manager.getProperty(cname+"."+pname);
+        if ( ! pname.startsWith(".") )
+            pname = "."+pname;
+        return manager.getProperty(cname+pname);
     }
     
     @Override
