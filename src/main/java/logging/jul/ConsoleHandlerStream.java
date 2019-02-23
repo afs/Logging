@@ -18,6 +18,8 @@
 
 package logging.jul;
 
+import java.io.FilterOutputStream;
+import java.io.IOException;
 import java.io.OutputStream ;
 import java.nio.charset.StandardCharsets ;
 import java.util.logging.* ;
@@ -48,16 +50,19 @@ public class ConsoleHandlerStream extends StreamHandler {
     // We need to chose the output in the constructor and ConsoleHandler does not allow that,
     // hence going straight to StreamHandler and having to provide the functionality here. 
     
-    boolean closeOnClose = true;
+    /** Don't close {@code System.err} or {@code System.out} */
+    private static OutputStream protectStdOutput(OutputStream outputStream) {
+        if ( outputStream == System.err || outputStream == System.out ) 
+            return new CloseProtectedOutputStream(outputStream);
+        return outputStream;
+    }
     
     public ConsoleHandlerStream() {
         this(System.out) ;
     }
     
     public ConsoleHandlerStream(OutputStream outputStream) {
-        super(outputStream, new TextFormatter()) ;
-        if ( outputStream == System.err || outputStream == System.out )
-            closeOnClose = false;
+        super(protectStdOutput(outputStream), new TextFormatter()) ;
         
         LogManager manager = LogManager.getLogManager();
         ClassLoader classLoader = ClassLoader.getSystemClassLoader() ;
@@ -117,11 +122,16 @@ public class ConsoleHandlerStream extends StreamHandler {
         flush();
     }
     
-    @Override
-    public void close() throws SecurityException {
-       if ( closeOnClose )
-           super.close();
-       else
-           super.flush();
+    /** Flush but do not close on close(). */
+    private static class CloseProtectedOutputStream extends FilterOutputStream {
+        // c.f. Apache Commons IO CloseShieldOutputStream but we don't want
+        // dependencies for this module just for one simple class.
+        public CloseProtectedOutputStream(OutputStream out) {
+            super(out);
+        }
+        
+        @Override public void close() throws IOException { 
+            flush();
+        }
     }
 }
