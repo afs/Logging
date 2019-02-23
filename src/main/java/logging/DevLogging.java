@@ -26,6 +26,14 @@ public class DevLogging {
 
     // LogFmt -> Log.
     
+//    Syslog protocol is described in
+//
+//    RFC 3164 - The BSD Syslog Protocol
+    // JUL -> syslog http://rusv.github.io/agafua-syslog/
+    
+    // Marking log streams. slf4j marker but may be implicit "this system".
+    // seeAlso: log4j2?
+    
     // JUL: Note in logging.properties the ".level" affects the loggers.
     // Set and reset : set once 
 
@@ -51,14 +59,7 @@ public class DevLogging {
         else if ( clsName.contains("Log4jLoggerFactory") )
             ; //LogCtl.setLog4j(); 
     }
-    
-    // Migrate and clean up:
-    
-//    public static void main(String...a) {
-//        org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("LOGGER") ;
-//        x.info("Info");
-//    }
-    
+
     public static void main(String...a) {
 //        LoggingSetup.logLoggingSetup(true);
 //        LoggingSetup.setLogging() ;

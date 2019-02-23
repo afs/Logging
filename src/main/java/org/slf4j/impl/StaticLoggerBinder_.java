@@ -24,8 +24,12 @@ import logging.impl.FmtSimpleFactory;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
+/**
+ * A SLF4J {@linkplain LoggerFactoryBinder} that goes to
+ * {@link logging.impl.FmtSimpleFactory}.
+ */
 public class StaticLoggerBinder_ implements LoggerFactoryBinder {
-
+    // Rename to activate.
     private static StaticLoggerBinder_ SINGLETON = new StaticLoggerBinder_();
     
     public static final StaticLoggerBinder_ getSingleton() {
