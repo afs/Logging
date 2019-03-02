@@ -17,7 +17,7 @@
  */
 
 /**
- * A direct  implementation of the SLF4J framework.
+ * A direct implementation of the SLF4J framework.
  * Less simple than {@code org.slf4j.impl.SimpleLogger}.
  */
 

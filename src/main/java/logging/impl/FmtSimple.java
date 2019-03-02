@@ -20,7 +20,7 @@ package logging.impl;
 
 import org.slf4j.helpers.MarkerIgnoringBase;
 
-/** An implemntation of the SLF4J framework.
+/** An implementation of the SLF4J framework.
  *  Unlike proper SLF4J, the format is a java-style format.
  *  Less simple than the {@code org.slf4j.impl.SimpleLogger}
  */

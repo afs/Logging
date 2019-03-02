@@ -20,47 +20,42 @@ package logging;
 
 import logging.LoggingSetup.LoggingSetupJUL;
 import logging.LoggingSetup.LoggingSetupLog4j;
-import org.slf4j.impl.StaticLoggerBinder;
 
 public class DevLogging {
 
-    // LogFmt -> Log.
-    
-//    Syslog protocol is described in
-//
-//    RFC 3164 - The BSD Syslog Protocol
+    //    Syslog protocol is described in
+    //
+    //    RFC 3164 - The BSD Syslog Protocol
     // JUL -> syslog http://rusv.github.io/agafua-syslog/
-    
-    // Marking log streams. slf4j marker but may be implicit "this system".
-    // seeAlso: log4j2?
-    
-    // JUL: Note in logging.properties the ".level" affects the loggers.
-    // Set and reset : set once 
 
-    /* Check skip if system properties:
-    public static void setLogging() {
-        if ( systemPropertySet("java.util.logging.config.file")
-           || systemPropertySet("log4j.configuration") ) {
-            // Leave to automatic
-        }
-        //LogCtl.setCmdLogging(log4Jsetup);
-        LogCtl.setJavaLogging();
-    }
-    */
-    
-    // Logging defaults : copy over Jena atlas base code [DONE]
-    
-    // Example / current jena
-    static {
-        final StaticLoggerBinder binder = StaticLoggerBinder.getSingleton();
-        final String clsName = binder.getLoggerFactoryClassStr();
-        if ( clsName.contains("JDK14LoggerFactory") )
-            ; // LogCtl.setJavaLoggingDft(); 
-        else if ( clsName.contains("Log4jLoggerFactory") )
-            ; //LogCtl.setLog4j(); 
-    }
+
+    // JUL: Note in logging.properties the ".level" affects the loggers.
+    // Set and reset : set once
+
+//    static {
+//        final StaticLoggerBinder binder = StaticLoggerBinder.getSingleton();
+//        final String clsName = binder.getLoggerFactoryClassStr();
+//        if ( clsName.contains("JDK14LoggerFactory") )
+//            ; // LogCtl.setJavaLoggingDft();
+//        else if ( clsName.contains("Log4jLoggerFactory") )
+//            ; //LogCtl.setLog4j();
+//    }
+
+    /* slf4j notes:
+     * Initialization is done
+     *    org.slf4j.LoggerFacory.preformInitialization->bind->findPossibleStaticLoggerBinderPathSet
+     *    StaticLoggerBinder.getSingleton();
+     *
+     * slf4j 1.8.0 uses ServiceLoader.
+     * + JPMS modules
+     */
 
     public static void main(String...a) {
+        org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger("SLF4J");
+
+        log4j2();
+        System.exit(0);
+
 //        LoggingSetup.logLoggingSetup(true);
 //        LoggingSetup.setLogging() ;
 //        java.util.logging.Logger LOG0 = java.util.logging.Logger.getLogger("JUL0") ;
@@ -68,17 +63,17 @@ public class DevLogging {
 //        System.err.flush();
 //        System.out.flush();
 //
-//        
+//
 //        org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("JUL1") ;
 //        x.info("Info1");
 //        new LoggingSetupJUL()
 //            .setup();
 //        x = org.slf4j.LoggerFactory.getLogger("JUL1") ;
 //        x.info("Info2");
-//        
+//
 //        //java.util.logging.LogManager.getLogManager().reset() silences loggers why?
-//        // Need to remake handler and 
-//        
+//        // Need to remake handler and
+//
 //        java.util.logging.Logger LOG = java.util.logging.Logger.getLogger("JUL0") ;
 //        LOG.info("Information:JUL");
 //        System.err.flush();
@@ -86,8 +81,8 @@ public class DevLogging {
 //    }
 //
 //    public static void main1(String...a) {
-        
-        
+
+
         //LoggingSetup.logSetup(true);
 //          org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("FOO") ;
 //          // org.slf4j.impl.Log4jLoggerAdapater or org.slf4j.impl.JDK14LoggerAdapter
@@ -96,13 +91,13 @@ public class DevLogging {
         LoggingSetup.logLoggingSetup(true);
         LoggingSetup.setLogging() ;
         // Some way to say "if both, use JUL" (dft is log4j)
-        
-        
+
+
         org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("LOGGER") ;
         x.info("Info");
         System.out.println("stdout");System.out.flush();
         System.err.println("stderr");System.err.flush();
-        
+
         LoggingSetup.allowLoggingReset(true);
         // Dev - direct to Log4j.
         if ( true ) {
@@ -129,6 +124,19 @@ public class DevLogging {
         x1.info("Info2");
         System.err.flush();
         System.out.flush();
+    }
 
+    private static void log4j2() {
+        System.setProperty("log4j.configurationFile", "log4j2.properties");
+        org.apache.logging.log4j.Logger LOG = org.apache.logging.log4j.LogManager.getLogger(DevLogging.class);
+        org.apache.logging.log4j.Logger LOG1 = org.apache.logging.log4j.LogManager.getLogger("org.apache.jena");
+        LOG.info("Message");
+        LOG.debug("Message");
+
+        LOG1.info("Message");
+        LOG1.debug("Message");
+
+//        LOG.error("Message");
+//        LOG.fatal("Message");
     }
 }
