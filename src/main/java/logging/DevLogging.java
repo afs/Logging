@@ -19,7 +19,7 @@
 package logging;
 
 import logging.LoggingSetup.LoggingSetupJUL;
-import logging.LoggingSetup.LoggingSetupLog4j;
+import logging.LoggingSetup.LoggingSetupLog4j1;
 
 public class DevLogging {
 
@@ -51,17 +51,26 @@ public class DevLogging {
      */
 
     public static void main(String...a) {
-        org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger("SLF4J");
 
-        log4j2();
+        // Needs work
+        // Defaulting to built in is not working.
+
+        LoggingSetup.logLoggingSetup(true);
+        LoggingSetup.setLogging() ;
+        org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("SLF4J_1") ;
+        x.info("Info1");
+        System.err.flush();
+        System.out.flush();
+        LoggingSetup.allowLoggingReset(true);
+        LoggingSetup.setLogging() ;
+        //sx = org.slf4j.LoggerFactory.getLogger("SLF4J_2") ;
+        x.info("Info2");
+
+
+        java.util.logging.Logger LOG0 = java.util.logging.Logger.getLogger("JUL0") ;
+        LOG0.info("Information:JUL");
+
         System.exit(0);
-
-//        LoggingSetup.logLoggingSetup(true);
-//        LoggingSetup.setLogging() ;
-//        java.util.logging.Logger LOG0 = java.util.logging.Logger.getLogger("JUL0") ;
-//        LOG0.info("Information:JUL");
-//        System.err.flush();
-//        System.out.flush();
 //
 //
 //        org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("JUL1") ;
@@ -93,17 +102,15 @@ public class DevLogging {
         // Some way to say "if both, use JUL" (dft is log4j)
 
 
-        org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("LOGGER") ;
-        x.info("Info");
-        System.out.println("stdout");System.out.flush();
-        System.err.println("stderr");System.err.flush();
+//        System.out.println("stdout");System.out.flush();
+//        System.err.println("stderr");System.err.flush();
 
         LoggingSetup.allowLoggingReset(true);
-        // Dev - direct to Log4j.
+        // Dev - direct to Log4j1
         if ( true ) {
-            // Does no rebind slf4j
+            // Does not rebind slf4j1
             System.err.println("Reset - log4j");
-            new LoggingSetupLog4j()
+            new LoggingSetupLog4j1()
                 .setup();
             org.apache.log4j.Logger LOG1 = org.apache.log4j.Logger.getLogger("LOG4J1") ;
             LOG1.info("Information:L4J1");

@@ -20,24 +20,49 @@ package logging;
 
 import logging.jul.ConsoleHandlerStream;
 
-/** 
+/**
  * Default settings for logging (JUL, Log4j v1).
- * Better to set explicitly. 
+ * Better to set explicitly.
  */
 public class LoggingDefaults {
-    /** Default logging setup when using log4j */ 
-    public static final String defaultLog4j = String.join("\n", 
+    /** Default logging setup when using log4j1 */
+    public static final String defaultLog4j1 = String.join("\n",
           "## Plain output with level, to stderr"
           ,"log4j.appender.plain=org.apache.log4j.ConsoleAppender"
           ,"log4j.appender.plain.target=System.out"
           ,"log4j.appender.plain.layout=org.apache.log4j.PatternLayout"
-          ,"log4j.appender.plain.layout.ConversionPattern=%d{HH:mm:ss} %-5p %-20c{1} :: %m%n"
+          ,"log4j.appender.plain.layout.ConversionPattern=%d{HH:mm:ss} %-5p %-20c{1} :1: %m%n"
           ,"## Everything"
           ,"log4j.rootLogger=INFO, plain"
            );
-    
+
+    public static final String defaultLog4j2 = String.join("\n"
+        ,"status = error"
+        ,"name = PropertiesConfig"
+
+        ,"filters = threshold"
+
+        ,"filter.threshold.type = ThresholdFilter"
+        ,"filter.threshold.level = debug"
+
+        ,"appender.console.type = Console"
+        ,"appender.console.name = STDOUT"
+        ,"appender.console.layout.type = PatternLayout"
+        ,"appender.console.layout.pattern = %d{HH:mm:ss} %-5p %-20c{1} :2: %m%n"
+
+        ,"rootLogger.level = INFO"
+        ,"rootLogger.appenderRefs = stdout"
+        ,"rootLogger.appenderRef.stdout.ref = STDOUT"
+
+    //,"logger.console.name = PACKAGE_NAME"
+    //,"logger.console.level = DEBUG"
+         );
+
+
+
+
     private static final String nameConsoleHandlerStream = ConsoleHandlerStream.class.getName();
-    
+
     /** Default logging setup when using java.util.logging (JUL) */
     public static final String defaultJUL = String.join
         ("\n"

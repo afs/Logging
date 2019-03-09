@@ -18,13 +18,50 @@
 
 package logging;
 
+import static logging.PkgLib.asUTF8bytes;
+import static logging.PkgLib.exception;
+
 import java.io.*;
 import java.net.URL;
-import static logging.PkgLib.*;
 
 /**
- * Set logging. Configuration for logging is chosen based on following steps
- * until one succeeds.
+ * Provide encapsulation of the different logging provided when used with slf4j (or used
+ * directly). Users of a library that uses slf4j, or the libraries test code, are exposed
+ * to the logging setup at runtime. This class tries to smooth that out. It has a
+ * collection of default setups for each supported system that log to the console on
+ * stdout.
+ *
+ * It initializes logging providers in a consistent fashion for any supported logging
+ * provider. The applications choice of logging is determined by the jars on the classpath
+ * (this is due to slf4j). Logging is always initialized somehow.
+ * <p>
+ * Normal use:
+ * * <pre>
+ * LoggingSetup.setLogging();</pre>
+ *
+ * before any logging occurs. This is safe to call multiple times unless
+ * {@code allowLoggingReset(true)} has been called.
+ * <p>
+ * To debug logging setup:
+ *
+ * <pre>
+ * LoggingSetup.logLoggingSetup(true);
+ * LoggingSetup.setLogging();</pre>
+ * and to re-initialize (this is quite sensitive the actual logging implementation
+ * details):
+ *
+ * <pre>
+ * LoggingSetup.allowLoggingReset(true);
+ * LoggingSetup.setLogging();</pre>
+ *
+ * Currently covered:
+ * <ul>
+ * <li>log4j2
+ * <li>log4j1
+ * <li>JUL (java.util.logging)
+ * </ul>
+ *
+ * The configuration for logging is chosen based on following steps until one succeeds.
  * <ol>
  * <li>Is logging already initialized? (test the system property).
  * <li>Use file:{config} (for appropriate {config} name).
@@ -39,19 +76,21 @@ public abstract class LoggingSetup {
     private static boolean loggingInitialized = false;
     private static boolean allowLoggingReset  = true;
 
-    public static  void logLoggingSetup(boolean value) {
-        logLogging = value;
+    /** Configure the logging setup system. */
+    public static  void logLoggingSetup(boolean logSetup) {
+        logLogging = logSetup;
     }
-    
+
     /**
      * Switch off logging setting. Used so that an application's
      * logging setup is not overwritten.
      */
     public static synchronized void allowLoggingReset(boolean value) {
         allowLoggingReset = value;
+        loggingInitialized = false;
     }
 
-    // Classpath resource  to look in for logging implementation configuration files 
+    // Classpath resource  to look in for logging implementation configuration files
     // (log4j.properties, logging.properties).
     private static String pathBase  = "log-conf/";
 
@@ -64,9 +103,9 @@ public abstract class LoggingSetup {
 
     /**
      * Set the path used to lookup a {config} file. This is the resource path, the file is
-     * "path/{config}". 
+     * "path/{config}".
      * Must be called before {@link #setLogging()}.
-     * Set to null for don't look 
+     * Set to null for don't look
      */
     public static void setPathBase(String string) {
         if ( string != null && !string.endsWith("/") )
@@ -82,11 +121,12 @@ public abstract class LoggingSetup {
 
     /** Setup logging */
     public static synchronized void setLogging() {
-        if ( !allowLoggingReset )
-            return;
         if ( loggingInitialized )
             return;
+        if ( !allowLoggingReset )
+            return;
         loggingInitialized = true;
+        allowLoggingReset = false;
 
         // Discover the binding for logging
         if ( checkForSimple() ) {
@@ -95,29 +135,49 @@ public abstract class LoggingSetup {
             return;
         }
 
-        boolean hasLog4j = checkForLog4J();
+        // Local: like slf4j simple but with java-style formatting
+        boolean hasFmtSimple = checkForFmtSimple();
+
+        boolean hasLog4j1 = checkForLog4J1();
+        boolean hasLog4j2 = checkForLog4J2();
         boolean hasJUL = checkForJUL();
-        if ( hasLog4j && hasJUL ) {
-            logAlways("Found both Log4j and JUL setup for slf4j; using Log4j");
-            hasJUL = false;
-        } else if ( !hasLog4j && !hasJUL ) {
+
+        if ( !hasLog4j1 && !hasLog4j2 && !hasJUL ) {
             // Do nothing - hope logging gets initialized automatically. e.g. logback.
             // In some ways this is the preferred outcome for the war file.
             //
             // The standalone server we have to make a decision and it is better
             // if it uses the predefined format.
-            logLogging("Neither Log4j nor JUL setup for slf4j");
+            logLogging("None of Log4j1, Log4j2 nor JUL setup for slf4j");
             return;
         }
 
+        if ( hasLog4j1 && hasLog4j2 && hasJUL ) {
+            logAlways("Found Log4j1, Log4j2 and JUL setups for slf4j; using Log4j2");
+            hasJUL = false;
+            hasLog4j1 = false;
+        } else if ( hasLog4j1 && hasJUL ) {
+            logAlways("Found both Log4j and JUL setup for slf4j; using Log4j1");
+            hasJUL = false;
+        } else if ( hasLog4j2 && hasJUL ) {
+            logAlways("Found both Log4j and JUL setup for slf4j; using Log4j2");
+            hasJUL = false;
+        } else if ( hasLog4j1 && hasLog4j2 ) {
+            logAlways("Found both Log4j1 and Log4j2 setup for slf4j; using Log4j2");
+            hasLog4j1 = false;
+        }
+
         LoggingSetup loggingSetup = null;
-        if ( hasLog4j )
-            loggingSetup = new LoggingSetupLog4j();
+        if ( hasLog4j1 )
+            loggingSetup = new LoggingSetupLog4j1();
+        if ( hasLog4j2 )
+            loggingSetup = new LoggingSetupLog4j2();
         if ( hasJUL )
             loggingSetup = new LoggingSetupJUL();
 
         if ( loggingSetup == null ) {
             logAlways("Failed to find a provider for slf4j");
+            // XXX Built-in.
             return;
         }
 
@@ -130,22 +190,24 @@ public abstract class LoggingSetup {
             logLogging("already set");
             return;
         }
-        
+
         logLogging("Setup: "+getDisplayName());
 
-        String fn1 = getLoggingSetupFilename();
-        String fn2 = null;
+        String[] files = getLoggingSetupFilenames();
 
-        if ( tryFileFor(fn1) )
-            return;
-        if ( tryFileFor(fn2) )
-            return;
-        if ( tryClassPathFor(getLoggingSetupFilename()) )
-            return;
-        if ( pathBase != null && tryClassPathFor(pathBase + getLoggingSetupFilename()) )
-            return;
+        for ( String fn : files ) {
+            if ( tryFileFor(fn) )
+                return;
+            if ( tryClassPathFor(fn) )
+                return;
+            if ( pathBase != null && tryClassPathFor(pathBase + fn) )
+                return;
+        }
         defaultSetup();
     }
+
+    // Initialization code - each has a default of calling initFromInputStream
+    // but code may wish to intercept the "tryMethod" point.
 
     /**
      * Get a string that is the default configuration and use that to configure logging
@@ -153,48 +215,61 @@ public abstract class LoggingSetup {
     protected void defaultSetup() {
         logLogging("Use default setup");
         byte b[] = asUTF8bytes(getDefaultString());
+        initFromBytes(b);
+    }
+
+    protected void initFromBytes(byte[] b) {
         try (InputStream input = new ByteArrayInputStream(b)) {
-            initFromInputStream(input);
+            initFromInputStream(input, null);
         }
         catch (IOException ex) {
             exception(ex);
         }
     }
-    
+
     protected boolean tryFileFor(String fn) {
         if ( fn == null )
             return false;
         logLogging("try file %s", fn);
         try {
-            File f = new File(fn);
-            if ( f.exists() ) {
-                logLogging("found file:" + fn);
-                try (InputStream input = new BufferedInputStream(new FileInputStream(f))) {
-                    initFromInputStream(input);
-                }
-                System.setProperty(getSystemProperty(), "file:" + fn);
-                return true;
-            }
+            return initFromFile(fn);
         }
         catch (Throwable th) {}
         return false;
     }
 
-    protected boolean tryClassPathFor(String resourceName) {
-        logLogging("try classpath %s", resourceName);
-        URL url = getResource(resourceName);
-        if ( url != null ) {
-            logLogging("found via classpath %s", url);
-            if ( url != null ) {
-                try {
-                    initFromInputStream(url.openStream());
-                }
-                catch (IOException e) { exception(e); }
-                System.setProperty(getSystemProperty(), url.toString());
-                return true;
+    protected boolean initFromFile(String fn) throws IOException {
+        File f = new File(fn);
+        if ( f.exists() ) {
+            logLogging("found file:" + fn);
+            try (InputStream input = new BufferedInputStream(new FileInputStream(f))) {
+                initFromInputStream(input, fn);
             }
+            System.setProperty(getSystemProperty(), "file:" + fn);
+            return true;
         }
         return false;
+    }
+
+    protected boolean tryClassPathFor(String resourceName) {
+        logLogging("try classpath %s", resourceName);
+        try {
+            return initFromURL(resourceName);
+        } catch (Throwable th) {}
+        return false;
+    }
+
+    protected boolean initFromURL(String resourceName) {
+        URL url = getResource(resourceName);
+        if ( url == null )
+            return false;
+        logLogging("found via classpath %s", url);
+        try {
+            initFromInputStream(url.openStream(), resourceName);
+        }
+        catch (IOException e) { exception(e); return false; }
+        System.setProperty(getSystemProperty(), url.toString());
+        return true;
     }
 
     /** Open by classpath or return null */
@@ -220,20 +295,42 @@ public abstract class LoggingSetup {
         return false;
     }
 
+    // slf4j v1.7.0
+    // slf4j 1.8.x uses ServiceLoader
+
     // Need both "org.slf4j.impl.Log4jLoggerAdapater" and "org.apache.log4j.Logger"
-    private static boolean checkForLog4J() {
+    private static boolean checkForLog4J1() {
         boolean bLog4j = checkForClass("org.apache.log4j.Logger");
-        boolean bLog4jAdapter = checkForClass("org.slf4j.impl.Log4jLoggerAdapter");
-        if ( bLog4j && bLog4jAdapter )
+        boolean bLog4jBinding = checkForClass("org.slf4j.impl.Log4jLoggerAdapter");
+        if ( bLog4j && bLog4jBinding )
             return true;
-        if ( !bLog4j && !bLog4jAdapter )
+        if ( !bLog4j && !bLog4jBinding )
             return false;
         if ( !bLog4j ) {
-            logAlways("Classpath has the slf4j-log4j adapter but not log4j");
+            logAlways("Classpath has the slf4j-log4j binding but not log4j1");
             return false;
         }
-        if ( !bLog4jAdapter ) {
-            logAlways("Classpath has log4j but not the slf4j-log4j adapter");
+        if ( !bLog4jBinding ) {
+            logAlways("Classpath has log4j1 but not the slf4j-log4j binding");
+            return false;
+        }
+        return false;
+    }
+
+    // Need both "org.slf4j.impl.Log4jLoggerAdapater" and "org.apache.logging.log4j.Logger"
+    private static boolean checkForLog4J2() {
+        boolean bLog4j = checkForClass("org.apache.logging.log4j.Logger");
+        boolean bLog4jBinding = checkForClass("org.apache.logging.slf4j.Log4jLoggerFactory");
+        if ( bLog4j && bLog4jBinding )
+            return true;
+        if ( !bLog4j && !bLog4jBinding )
+            return false;
+        if ( !bLog4j ) {
+            logAlways("Classpath has the log4j-slf4j-impl bridge but not log4j2");
+            return false;
+        }
+        if ( !bLog4jBinding ) {
+            logAlways("Classpath has log4j2 but not the log4j-slf4j-impl bridge");
             return false;
         }
         return false;
@@ -245,6 +342,10 @@ public abstract class LoggingSetup {
 
     private static boolean checkForSimple() {
         return checkForClass("org.slf4j.impl.SimpleLogger");
+    }
+
+    private static boolean checkForFmtSimple() {
+        return checkForClass("logging.impl.FmtSimpleFactory");
     }
 
     private static boolean checkForClass(String className) {
@@ -264,8 +365,8 @@ public abstract class LoggingSetup {
         }
     }
 
-    private static PrintStream logLogger = System.err; 
-    
+    private static PrintStream logLogger = System.err;
+
     /** Log for the logging setup messages like warnings. */
     protected static void logAlways(String fmt, Object... args) {
         fmt = "[Logging setup] "+fmt;
@@ -275,48 +376,73 @@ public abstract class LoggingSetup {
         logLogger.printf(fmt, args);
     }
 
-    protected abstract String getLoggingSetupFilename();
+    /**
+     * Return a array of files names / resource names to try.
+     * Do not return null.
+     */
+    protected abstract String[] getLoggingSetupFilenames();
 
     protected abstract String getSystemProperty();
 
     protected abstract String getDefaultString();
 
     /** Configure logging from an input stream */
-    protected abstract void initFromInputStream(InputStream inputStream) throws IOException;
+    protected abstract void initFromInputStream(InputStream inputStream, String name) throws IOException;
 
     protected abstract String getDisplayName();
 
     public abstract void setLevel(String logger, String level);
 
     /** Log4j setup */
-    static class LoggingSetupLog4j extends LoggingSetup {
+    static class LoggingSetupLog4j2 extends LoggingSetup {
 
         @Override
         protected String getDisplayName() {
-            return "Log4J";
-        }
-        
-        @Override
-        protected void initFromInputStream(InputStream inputStream) throws IOException {
-            org.apache.log4j.PropertyConfigurator.configure(inputStream);
+            return "Log4j2";
         }
 
         @Override
-        protected String getLoggingSetupFilename() {
-            return "log4j.properties";
+        protected void initFromInputStream(InputStream inputStream, String name) throws IOException {
+            // Dispatch name to syntax.
+            org.apache.logging.log4j.core.config.ConfigurationSource source = new org.apache.logging.log4j.core.config.ConfigurationSource(inputStream);
+            org.apache.logging.log4j.core.config.ConfigurationFactory factory = null;
+            if ( name == null )
+                factory =  org.apache.logging.log4j.core.config.ConfigurationFactory.getInstance();
+            else if ( name.endsWith(".yaml") || name.endsWith(".ym") )
+                factory = new org.apache.logging.log4j.core.config.yaml.YamlConfigurationFactory();
+            else if ( name.endsWith(".properties")  )
+                factory = new org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory();
+            else
+                factory =  org.apache.logging.log4j.core.config.ConfigurationFactory.getInstance();
+
+            org.apache.logging.log4j.core.config.Configuration configuration = factory.getConfiguration(null, source);
+            org.apache.logging.log4j.core.config.Configurator.initialize(configuration);
+
+//            // Guess work. Needs testing.
+//            // File extension for the syntax.
+//            org.apache.logging.log4j.core.config.ConfigurationSource source = new ConfigurationSource(inputStream, new File("input.properties"));
+//            org.apache.logging.log4j.core.config.Configuration config =
+//                org.apache.logging.log4j.core.config.ConfigurationFactory.getInstance().getConfiguration(null, source);
+//            org.apache.logging.log4j.core.config.Configurator.initialize(config);
+        }
+
+        @Override
+        protected String[] getLoggingSetupFilenames() {
+            return new String[] {"log4j2.yaml", "log4j2.yml", "log4j2.properties"};
         }
 
         @Override
         protected String getSystemProperty() {
-            return "log4j.configuration";
+            // XXX ???
+            return "log4j.configurationFile";
         }
 
         @Override
         protected String getDefaultString() {
-            return LoggingDefaults.defaultLog4j;
+            return LoggingDefaults.defaultLog4j2;
         }
 
-        private boolean log4jMsgLoggedOnce = false; 
+        private boolean log4j2MsgLoggedOnce = false;
         @Override
         public void setLevel(String logger, String levelName) {
             try {
@@ -337,33 +463,89 @@ public abstract class LoggingSetup {
                     org.apache.log4j.LogManager.getLogger(logger).setLevel(level);
             }
             catch (NoClassDefFoundError ex) {
-                if ( ! log4jMsgLoggedOnce ) {
-                    logAlways("NoClassDefFoundError (log4j)");
-                    log4jMsgLoggedOnce = true;
+                if ( ! log4j2MsgLoggedOnce ) {
+                    logAlways("NoClassDefFoundError (log4j2)");
+                    log4j2MsgLoggedOnce = true;
                 }
             }
         }
+    }
 
+    /** Log4j1 setup */
+    static class LoggingSetupLog4j1 extends LoggingSetup {
+
+        @Override
+        protected String getDisplayName() {
+            return "Log4j1";
+        }
+
+        @Override
+        protected void initFromInputStream(InputStream inputStream, String name) throws IOException {
+            org.apache.log4j.PropertyConfigurator.configure(inputStream);
+        }
+
+        @Override
+        protected String[] getLoggingSetupFilenames() {
+            return new String[] {"log4j.properties"};
+        }
+
+        @Override
+        protected String getSystemProperty() {
+            return "log4j.configuration";
+        }
+
+        @Override
+        protected String getDefaultString() {
+            return LoggingDefaults.defaultLog4j1;
+        }
+
+        private boolean log4j1MsgLoggedOnce = false;
+        @Override
+        public void setLevel(String logger, String levelName) {
+            try {
+                org.apache.log4j.Level level = org.apache.log4j.Level.ALL;
+                if ( levelName.equalsIgnoreCase("info") )
+                    level = org.apache.log4j.Level.INFO;
+                else if ( levelName.equalsIgnoreCase("debug") )
+                    level = org.apache.log4j.Level.DEBUG;
+                else if ( levelName.equalsIgnoreCase("trace") )
+                    level = org.apache.log4j.Level.TRACE;
+                else if ( levelName.equalsIgnoreCase("warn") || levelName.equalsIgnoreCase("warning") )
+                    level = org.apache.log4j.Level.WARN;
+                else if ( levelName.equalsIgnoreCase("error") )
+                    level = org.apache.log4j.Level.ERROR;
+                else if ( levelName.equalsIgnoreCase("OFF") )
+                    level = org.apache.log4j.Level.OFF;
+                if ( level != null )
+                    org.apache.log4j.LogManager.getLogger(logger).setLevel(level);
+            }
+            catch (NoClassDefFoundError ex) {
+                if ( ! log4j1MsgLoggedOnce ) {
+                    logAlways("NoClassDefFoundError (log4j)");
+                    log4j1MsgLoggedOnce = true;
+                }
+            }
+        }
     }
 
     /** java.util.logging (JUL) setup */
     static class LoggingSetupJUL extends LoggingSetup {
-        
+
         @Override
         protected String getDisplayName() {
             return "JUL";
         }
 
         @Override
-        protected void initFromInputStream(InputStream inputStream) throws IOException {
-            //calls getLogManager().reset() closes handlers
-            // logging.ConsoleHandlerStream.reset() stops this. 
+        protected void initFromInputStream(InputStream inputStream, String name) throws IOException {
+            // A call of getLogManager().reset() closes handlers and streams.
+            // logging.ConsoleHandlerStream.reset() stops this.
             java.util.logging.LogManager.getLogManager().readConfiguration(inputStream);
         }
 
         @Override
-        protected String getLoggingSetupFilename() {
-            return "logging.properties";
+        protected String[] getLoggingSetupFilenames() {
+            return new String[] {"logging.properties"};
         }
 
         @Override
@@ -404,8 +586,8 @@ public abstract class LoggingSetup {
         }
 
         @Override
-        protected String getLoggingSetupFilename() {
-            return null;
+        protected String[] getLoggingSetupFilenames() {
+            return new String[0];
         }
 
         @Override
@@ -419,7 +601,7 @@ public abstract class LoggingSetup {
         }
 
         @Override
-        protected void initFromInputStream(InputStream inputStream) throws IOException {}
+        protected void initFromInputStream(InputStream inputStream, String name) throws IOException {}
 
         @Override
         public void setLevel(String logger, String level) {}
