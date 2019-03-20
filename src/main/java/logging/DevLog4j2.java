@@ -18,25 +18,21 @@
 
 package logging;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.yaml.YamlConfigurationFactory;
 
 public class DevLog4j2 {
     public static void main(String...a) throws IOException {
-        InputStream in = new FileInputStream("x-log4j2.yaml");
-        ConfigurationSource source = new ConfigurationSource(in);
-        ConfigurationFactory factory = new YamlConfigurationFactory();
-        Configuration configuration = factory.getConfiguration(null, source);
-        Configurator.initialize(configuration);
+//        InputStream in = new FileInputStream("x-log4j2.yaml");
+//        ConfigurationSource source = new ConfigurationSource(in);
+//        ConfigurationFactory factory = new YamlConfigurationFactory();
+//        Configuration configuration = factory.getConfiguration(null, source);
+//        Configurator.initialize(configuration);
+
+        Configurator.initialize(null, "log4j2.xml");
 
         Logger LOG = LogManager.getLogger(DevLog4j2.class);
         LOG.info("Message");

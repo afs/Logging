@@ -27,10 +27,11 @@ public class DevLogging {
     //
     //    RFC 3164 - The BSD Syslog Protocol
     // JUL -> syslog http://rusv.github.io/agafua-syslog/
-
-
+    
     // JUL: Note in logging.properties the ".level" affects the loggers.
     // Set and reset : set once
+    
+    // Redesign : test if initialization alredy built in.  
 
 //    static {
 //        final StaticLoggerBinder binder = StaticLoggerBinder.getSingleton();

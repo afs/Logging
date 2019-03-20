@@ -36,30 +36,22 @@ public class LoggingDefaults {
           ,"log4j.rootLogger=INFO, plain"
            );
 
-    public static final String defaultLog4j2 = String.join("\n"
-        ,"status = error"
-        ,"name = PropertiesConfig"
-
-        ,"filters = threshold"
-
-        ,"filter.threshold.type = ThresholdFilter"
-        ,"filter.threshold.level = debug"
-
-        ,"appender.console.type = Console"
-        ,"appender.console.name = STDOUT"
-        ,"appender.console.layout.type = PatternLayout"
-        ,"appender.console.layout.pattern = %d{HH:mm:ss} %-5p %-20c{1} :2: %m%n"
-
-        ,"rootLogger.level = INFO"
-        ,"rootLogger.appenderRefs = stdout"
-        ,"rootLogger.appenderRef.stdout.ref = STDOUT"
-
-    //,"logger.console.name = PACKAGE_NAME"
-    //,"logger.console.level = DEBUG"
-         );
-
-
-
+    // Log4J2, non-strict XML format
+    public static final String defaultLog4j2_xml = String.join("\n"
+        ,"<?xml version='1.0' encoding='UTF-8'?>"
+        ,"<Configuration status='INFO'>"
+        ,"  <Appenders>"
+        ,"    <Console name='STDOUT' target='SYSTEM_OUT'>"
+        ,"      <PatternLayout pattern='%d{HH:mm:ss} %-5p %-15c{1} :: %m%n'/>"
+        ,"    </Console>"
+        ,"  </Appenders>"
+        ,"  <Loggers>"
+        ,"    <Root level='INFO'>"
+        ,"      <AppenderRef ref='STDOUT' />"
+        ,"    </Root>"
+        ,"  </Loggers>"
+        ,"</Configuration>"
+        );
 
     private static final String nameConsoleHandlerStream = ConsoleHandlerStream.class.getName();
 

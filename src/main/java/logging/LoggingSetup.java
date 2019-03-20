@@ -73,8 +73,11 @@ import java.net.URL;
 
 public abstract class LoggingSetup {
     private static boolean logLogging         = false;
-    private static boolean loggingInitialized = false;
     private static boolean allowLoggingReset  = true;
+    
+    private static Object lock = new Object();
+    private static volatile boolean loggingInitialized = false;
+    
 
     /** Configure the logging setup system. */
     public static  void logLoggingSetup(boolean logSetup) {
@@ -119,8 +122,23 @@ public abstract class LoggingSetup {
         return theLoggingSetup;
     }
 
-    /** Setup logging */
-    public static synchronized void setLogging() {
+    /** Setup logging.
+     * This is the one call needed
+     * <pre>
+     * static { LoggingSetup.setLogging(); }</pre>
+     * and logging will initialize.
+     * 
+     * This call can be called multiple time and it thread safe.; looking wil initialize the first 
+     */
+    public static void setLogging() {
+        if ( loggingInitialized )
+            return;
+        synchronized(lock) {
+            setLoggingInternal();
+        }
+    }
+        
+    private static void setLoggingInternal() {
         if ( loggingInitialized )
             return;
         if ( !allowLoggingReset )
@@ -428,18 +446,17 @@ public abstract class LoggingSetup {
 
         @Override
         protected String[] getLoggingSetupFilenames() {
-            return new String[] {"log4j2.yaml", "log4j2.yml", "log4j2.properties"};
+            return new String[] { "log4j2.properties", "log4j2.yaml", "log4j2.yml", "log4j2.json", "log4j2.jsn", "log4j2.xml" };
         }
 
         @Override
         protected String getSystemProperty() {
-            // XXX ???
             return "log4j.configurationFile";
         }
 
         @Override
         protected String getDefaultString() {
-            return LoggingDefaults.defaultLog4j2;
+            return LoggingDefaults.defaultLog4j2_xml;
         }
 
         private boolean log4j2MsgLoggedOnce = false;
