@@ -30,15 +30,15 @@ import org.slf4j.spi.LoggerFactoryBinder;
 public class StaticLoggerBinderAuto implements LoggerFactoryBinder {
     // Rename to activate.
     private static StaticLoggerBinderAuto SINGLETON = new StaticLoggerBinderAuto();
-    
+
     public static final StaticLoggerBinderAuto getSingleton() {
         return SINGLETON;
     }
 
     private void decide() {
-        
+
     }
-    
+
     // SLF4J checking mechanism.
 //    // to avoid constant folding by the compiler, this field must *not* be final
 //    public static String REQUESTED_API_VERSION = "1.7.0"; // !final

@@ -18,14 +18,14 @@
 
 package logging;
 
-import java.util.IllegalFormatException ;
+import java.util.IllegalFormatException;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Logging with String.format (which can be expensive).
- * 
+ *
  * The formatting operations are not designed specifically
  * for performance, but they do delay forming strings for output
  * until it is known that a log message is actually required by
@@ -40,125 +40,125 @@ public class LogFmt {
     /* Log at 'trace' level. */
     public static void trace(Logger log, String fmt, Object...args) {
         if ( log.isTraceEnabled() )
-            log.trace(format(fmt, args)) ;
+            log.trace(format(fmt, args));
     }
 
     /* Log at 'trace' level. */
     public static void trace(Logger log, Throwable th, String fmt, Object...args) {
         if ( log.isTraceEnabled() )
-            log.trace(format(fmt, args), th) ;
+            log.trace(format(fmt, args), th);
     }
 
     /* Log at 'trace' level. */
     public static void trace(Class<?> cls, String fmt, Object...args) {
-        trace(log(cls), fmt, args) ;
+        trace(log(cls), fmt, args);
     }
 
     /* Log at 'trace' level. */
     public static void trace(Class<?> cls, Throwable th, String fmt, Object...args) {
-        trace(log(cls), th, fmt, args) ;
+        trace(log(cls), th, fmt, args);
     }
 
     /* Log at 'debug' level */
     public static void debug(Logger log, String fmt, Object...args) {
         if ( log.isDebugEnabled() )
-            log.debug(format(fmt, args)) ;
+            log.debug(format(fmt, args));
     }
 
     /* Log at 'debug' level */
     public static void debug(Logger log, Throwable th, String fmt, Object...args) {
         if ( log.isDebugEnabled() )
-            log.debug(format(fmt, args), th) ;
+            log.debug(format(fmt, args), th);
     }
 
     /* Log at 'debug' level */
     public static void debug(Class<?> cls, String fmt, Object...args) {
-        debug(log(cls), fmt, args) ;
+        debug(log(cls), fmt, args);
     }
 
     /* Log at 'debug' level */
     public static void debug(Class<?> cls, Throwable th, String fmt, Object...args) {
-        debug(log(cls), th, fmt, args) ;
+        debug(log(cls), th, fmt, args);
     }
 
     /* Log at 'info' level */
     public static void info(Logger log, String fmt, Object...args) {
         if ( log.isInfoEnabled() )
-            log.info(format(fmt, args)) ;
+            log.info(format(fmt, args));
     }
 
     /* Log at 'info' level */
     public static void info(Logger log, Throwable th, String fmt, Object...args) {
         if ( log.isInfoEnabled() )
-            log.info(format(fmt, args), th) ;
+            log.info(format(fmt, args), th);
     }
 
     /* Log at 'info' level */
     public static void info(Class<?> cls, String fmt, Object...args) {
-        info(log(cls), fmt, args) ;
+        info(log(cls), fmt, args);
     }
 
     /* Log at 'info' level */
     public static void info(Class<?> cls, Throwable th, String fmt, Object...args) {
-        info(log(cls), th, fmt, args) ;
+        info(log(cls), th, fmt, args);
     }
 
     /* Log at 'warn' level */
     public static void warn(Logger log, String fmt, Object...args) {
         if ( log.isWarnEnabled() )
-            log.warn(format(fmt, args)) ;
+            log.warn(format(fmt, args));
     }
 
     /* Log at 'warn' level */
     public static void warn(Logger log, Throwable th, String fmt, Object...args) {
         if ( log.isWarnEnabled() )
-            log.warn(format(fmt, args), th) ;
+            log.warn(format(fmt, args), th);
     }
 
     /* Log at 'warn' level */
     public static void warn(Class<?> cls, String fmt, Object...args) {
-        warn(log(cls), fmt, args) ;
+        warn(log(cls), fmt, args);
     }
 
     /* Log at 'warn' level */
     public static void warn(Class<?> cls, Throwable th, String fmt, Object...args) {
-        warn(log(cls), th, fmt, args) ;
+        warn(log(cls), th, fmt, args);
     }
 
    /* Log at 'error' level */
     public static void error(Logger log, String fmt, Object...args) {
         if ( log.isErrorEnabled() )
-            log.error(format(fmt, args)) ;
+            log.error(format(fmt, args));
     }
 
     /* Log at 'error' level */
     public static void error(Logger log, Throwable th, String fmt, Object...args) {
         if ( log.isErrorEnabled() )
-            log.error(format(fmt, args), th) ;
+            log.error(format(fmt, args), th);
     }
 
     /* Log at 'error' level */
     public static void error(Class<?> cls, String fmt, Object...args) {
-        error(log(cls), fmt, args) ;
+        error(log(cls), fmt, args);
     }
 
     /* Log at 'error' level */
     public static void error(Class<?> cls, Throwable th, String fmt, Object...args) {
-        error(log(cls), th, fmt, args) ;
+        error(log(cls), th, fmt, args);
     }
 
 
     private static String format(String fmt, Object[] args) {
         try {
-            return String.format(fmt, args) ;
+            return String.format(fmt, args);
         } catch (IllegalFormatException ex) {
             // return something, however grotty.
-            return fmt+" "+args ;
+            return fmt+" "+args;
         }
     }
 
     private static Logger log(Class<?> cls) {
-        return LoggerFactory.getLogger(cls) ;
+        return LoggerFactory.getLogger(cls);
     }
 }
 

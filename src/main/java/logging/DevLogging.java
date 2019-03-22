@@ -27,19 +27,19 @@ public class DevLogging {
     //
     //    RFC 3164 - The BSD Syslog Protocol
     // JUL -> syslog http://rusv.github.io/agafua-syslog/
-    
+
     // JUL: Note in logging.properties the ".level" affects the loggers.
     // Set and reset : set once
-    
-    // Redesign : test if initialization alredy built in.  
+
+    // Redesign : test if initialization alredy built in.
 
 //    static {
 //        final StaticLoggerBinder binder = StaticLoggerBinder.getSingleton();
 //        final String clsName = binder.getLoggerFactoryClassStr();
 //        if ( clsName.contains("JDK14LoggerFactory") )
-//            ; // LogCtl.setJavaLoggingDft();
+//           ; // LogCtl.setJavaLoggingDft();
 //        else if ( clsName.contains("Log4jLoggerFactory") )
-//            ; //LogCtl.setLog4j();
+//           ; //LogCtl.setLog4j();
 //    }
 
     /* slf4j notes:
@@ -57,34 +57,34 @@ public class DevLogging {
         // Defaulting to built in is not working.
 
         LoggingSetup.logLoggingSetup(true);
-        LoggingSetup.setLogging() ;
-        org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("SLF4J_1") ;
+        LoggingSetup.setLogging();
+        org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("SLF4J_1");
         x.info("Info1");
         System.err.flush();
         System.out.flush();
         LoggingSetup.allowLoggingReset(true);
-        LoggingSetup.setLogging() ;
-        //sx = org.slf4j.LoggerFactory.getLogger("SLF4J_2") ;
+        LoggingSetup.setLogging();
+        //sx = org.slf4j.LoggerFactory.getLogger("SLF4J_2");
         x.info("Info2");
 
 
-        java.util.logging.Logger LOG0 = java.util.logging.Logger.getLogger("JUL0") ;
+        java.util.logging.Logger LOG0 = java.util.logging.Logger.getLogger("JUL0");
         LOG0.info("Information:JUL");
 
         System.exit(0);
 //
 //
-//        org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("JUL1") ;
+//        org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("JUL1");
 //        x.info("Info1");
 //        new LoggingSetupJUL()
 //            .setup();
-//        x = org.slf4j.LoggerFactory.getLogger("JUL1") ;
+//        x = org.slf4j.LoggerFactory.getLogger("JUL1");
 //        x.info("Info2");
 //
 //        //java.util.logging.LogManager.getLogManager().reset() silences loggers why?
 //        // Need to remake handler and
 //
-//        java.util.logging.Logger LOG = java.util.logging.Logger.getLogger("JUL0") ;
+//        java.util.logging.Logger LOG = java.util.logging.Logger.getLogger("JUL0");
 //        LOG.info("Information:JUL");
 //        System.err.flush();
 //        System.out.flush();
@@ -94,12 +94,12 @@ public class DevLogging {
 
 
         //LoggingSetup.logSetup(true);
-//          org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("FOO") ;
+//          org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("FOO");
 //          // org.slf4j.impl.Log4jLoggerAdapater or org.slf4j.impl.JDK14LoggerAdapter
 //          // Except too late!
 
         LoggingSetup.logLoggingSetup(true);
-        LoggingSetup.setLogging() ;
+        LoggingSetup.setLogging();
         // Some way to say "if both, use JUL" (dft is log4j)
 
 
@@ -113,7 +113,7 @@ public class DevLogging {
             System.err.println("Reset - log4j");
             new LoggingSetupLog4j1()
                 .setup();
-            org.apache.log4j.Logger LOG1 = org.apache.log4j.Logger.getLogger("LOG4J1") ;
+            org.apache.log4j.Logger LOG1 = org.apache.log4j.Logger.getLogger("LOG4J1");
             LOG1.info("Information:L4J1");
         }
         // Dev - direct to JUL.
@@ -122,13 +122,13 @@ public class DevLogging {
             // Re-initializing JUL does not work - in fact, it turns everything off.
             new LoggingSetupJUL()
                 .setup();
-            java.util.logging.Logger LOG = java.util.logging.Logger.getLogger("JUL") ;
+            java.util.logging.Logger LOG = java.util.logging.Logger.getLogger("JUL");
             LOG.info("Information:JUL");
             System.err.flush();
             System.out.flush();
         }
 
-        org.slf4j.Logger x1 = org.slf4j.LoggerFactory.getLogger("LOGGER1") ;
+        org.slf4j.Logger x1 = org.slf4j.LoggerFactory.getLogger("LOGGER1");
         x1.info("Info2");
         System.err.flush();
         System.out.flush();

@@ -19,9 +19,9 @@
 /**
  * Helper code for non-time critical logging, using slf4j.
  * <p>
- * Primarily designed for logging during development and debug programmes, 
+ * Primarily designed for logging during development and debug programmes,
  * including in production, rather than for audit or applciation monitoring.
- * 
+ *
  * <ul>
  * <li>{@link logging.LogFmt} -- Formatted logging using java's printf style formats.
  * <li>{@link logging.LogCtl} -- Change logging levels during runtime (e.g. development)

@@ -74,10 +74,10 @@ import java.net.URL;
 public abstract class LoggingSetup {
     private static boolean logLogging         = false;
     private static boolean allowLoggingReset  = true;
-    
+
     private static Object lock = new Object();
     private static volatile boolean loggingInitialized = false;
-    
+
 
     /** Configure the logging setup system. */
     public static  void logLoggingSetup(boolean logSetup) {
@@ -127,8 +127,8 @@ public abstract class LoggingSetup {
      * <pre>
      * static { LoggingSetup.setLogging(); }</pre>
      * and logging will initialize.
-     * 
-     * This call can be called multiple time and it thread safe.; looking wil initialize the first 
+     *
+     * This call can be called multiple time and it thread safe.; looking wil initialize the first
      */
     public static void setLogging() {
         if ( loggingInitialized )
@@ -137,7 +137,7 @@ public abstract class LoggingSetup {
             setLoggingInternal();
         }
     }
-        
+
     private static void setLoggingInternal() {
         if ( loggingInitialized )
             return;

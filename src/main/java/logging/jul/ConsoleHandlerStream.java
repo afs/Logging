@@ -20,9 +20,9 @@ package logging.jul;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
-import java.io.OutputStream ;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.* ;
+import java.util.logging.*;
 
 /** Console handler that modifies {@link java.util.logging.ConsoleHandler}.
  * Supports the configuration parameters of {@link ConsoleHandler} -- {@code .level},
@@ -59,18 +59,18 @@ public class ConsoleHandlerStream extends StreamHandler {
     }
 
     public ConsoleHandlerStream() {
-        this(System.out) ;
+        this(System.out);
     }
 
     public ConsoleHandlerStream(OutputStream outputStream) {
         // default Level.INFO
-        super(protectStdOutput(outputStream), new TextFormatter()) ;
+        super(protectStdOutput(outputStream), new TextFormatter());
         // Change default to all.
         // This avoid the effect of not getting sub-INFO output when no level is set.
         setLevel(Level.ALL);
 
         LogManager manager = LogManager.getLogManager();
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader() ;
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         String cname = getClass().getName();
 
         // Necessary, because Handler set defaults
@@ -79,15 +79,15 @@ public class ConsoleHandlerStream extends StreamHandler {
 
         // -- Level
         Level level = Level.INFO;
-        String pLevel = getProperty(manager, cname, ".level") ;
+        String pLevel = getProperty(manager, cname, ".level");
         if ( pLevel != null )
-            level = Level.parse(pLevel) ;
+            level = Level.parse(pLevel);
         setLevel(level);
 
         // -- Formatter
         // Necessary, because we gave a default to Handler in super()
         // which causes it to ignore "formatter" setting.
-        String pFormatter = getProperty(manager, cname, ".formatter") ;
+        String pFormatter = getProperty(manager, cname, ".formatter");
         if ( pFormatter != null ) {
             try {
                 Class<?> cls = classLoader.loadClass(pFormatter);
@@ -95,13 +95,13 @@ public class ConsoleHandlerStream extends StreamHandler {
                 Formatter fmt = (Formatter)cls.newInstance();
                 setFormatter(fmt);
             } catch (Exception ex) {
-                System.err.println("Problems setting the logging formatter") ;
+                System.err.println("Problems setting the logging formatter");
                 ex.printStackTrace(System.err);
             }
         }
 
         // -- Filter
-        String pFilter = getProperty(manager, cname, ".filter") ;
+        String pFilter = getProperty(manager, cname, ".filter");
         if ( pFilter != null ) {
             try {
                 Class<?> cls = classLoader.loadClass(pFilter);
@@ -109,19 +109,19 @@ public class ConsoleHandlerStream extends StreamHandler {
                 Filter filter = (Filter) cls.newInstance();
                 setFilter(filter);
             } catch (Exception ex) {
-                System.err.println("Problems setting the logging filter") ;
+                System.err.println("Problems setting the logging filter");
                 ex.printStackTrace(System.err);
             }
         }
 
         // -- Encoding : Default UTF-8
-        String pEncoding = getProperty(manager, cname, "encoding") ;
+        String pEncoding = getProperty(manager, cname, "encoding");
         if ( pEncoding == null )
-            pEncoding = StandardCharsets.UTF_8.name() ;
-        try { setEncoding(pEncoding) ; }
+            pEncoding = StandardCharsets.UTF_8.name();
+        try { setEncoding(pEncoding); }
         catch (Exception e) {
             // That should work for UTF-8 as it is a required charset.
-            System.err.print("Failed to set encoding: "+e.getMessage()) ;
+            System.err.print("Failed to set encoding: "+e.getMessage());
         }
     }
 

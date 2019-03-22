@@ -26,11 +26,11 @@ import java.io.UnsupportedEncodingException;
     /*package*/ static void exception(IOException ex) {
         throw new RuntimeException(ex);
     }
-    
+
     /*package*/ static byte[] asUTF8bytes(String s)
     {
         try { return s.getBytes("UTF-8"); }
         catch (UnsupportedEncodingException ex)
-        { throw new RuntimeException("UTF-8 not supported!"); } 
+        { throw new RuntimeException("UTF-8 not supported!"); }
     }
 }

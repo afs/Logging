@@ -31,7 +31,7 @@ import org.slf4j.spi.LoggerFactoryBinder;
 public class StaticLoggerBinder_ implements LoggerFactoryBinder {
     // Rename to activate.
     private static StaticLoggerBinder_ SINGLETON = new StaticLoggerBinder_();
-    
+
     public static final StaticLoggerBinder_ getSingleton() {
         return SINGLETON;
     }

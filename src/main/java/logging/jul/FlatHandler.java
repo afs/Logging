@@ -18,12 +18,12 @@
 
 package logging.jul;
 
-import java.util.logging.LogRecord ;
-import java.util.logging.StreamHandler ;
+import java.util.logging.LogRecord;
+import java.util.logging.StreamHandler;
 
 /** A handler and formatter for unadorned output to stdout.
- * Example: NCSA Format logging in Fuseki already formats the whole line 
- * 
+ * Example: NCSA Format logging in Fuseki already formats the whole line
+ *
  * <pre>
  * org.apache.jena.fuseki.Request.level=INFO
  * org.apache.jena.fuseki.Request.useParentHandlers=false
@@ -32,11 +32,11 @@ import java.util.logging.StreamHandler ;
  * @see FlatFormatter
  */
 public class FlatHandler extends StreamHandler {
-    
-    public FlatHandler() { 
-        super(System.out, new FlatFormatter(true)) ;
+
+    public FlatHandler() {
+        super(System.out, new FlatFormatter(true));
     }
-    
+
     @Override
     public void publish(LogRecord record) {
         super.publish(record);

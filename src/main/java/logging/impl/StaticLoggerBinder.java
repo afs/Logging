@@ -21,7 +21,7 @@ package logging.impl;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
-// Must be in org.slf4j.impl. to work (slf4j 1.7.x ; slf4j 1.8.x uses ServiceLoader<SLF4JServiceProvider>)
+// Must be in org.slf4j.impl. to work (slf4j 1.7.x; slf4j 1.8.x uses ServiceLoader<SLF4JServiceProvider>)
 public class StaticLoggerBinder implements LoggerFactoryBinder {
 
   private static StaticLoggerBinder SINGLETON = new StaticLoggerBinder();

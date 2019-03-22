@@ -18,30 +18,30 @@
 
 package logging.jul;
 
-import java.text.MessageFormat ;
-import java.util.logging.Formatter ;
-import java.util.logging.LogRecord ;
+import java.text.MessageFormat;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
 
 /** Very simple formatter - just the log message.
  * @see FlatHandler
- */ 
+ */
 public class FlatFormatter extends Formatter {
 
-    private final boolean ensureNL ;
+    private final boolean ensureNL;
 
-    public FlatFormatter() { this(true) ; }
-    
+    public FlatFormatter() { this(true); }
+
     public FlatFormatter(boolean ensureNewline) {
-        this.ensureNL = ensureNewline ;
+        this.ensureNL = ensureNewline;
     }
 
     @Override
     public String format(LogRecord record) {
-        String message = record.getMessage() ;
+        String message = record.getMessage();
         if ( record.getParameters() != null )
-            message = MessageFormat.format(message, record.getParameters()) ;
+            message = MessageFormat.format(message, record.getParameters());
         if ( ensureNL && ! message.endsWith("\n") )
-            message = message + "\n" ;
-        return message ;                 
+            message = message + "\n";
+        return message;
     }
 }

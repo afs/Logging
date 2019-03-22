@@ -16,118 +16,118 @@
  * limitations under the License.
  */
 
-package logging ;
+package logging;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Simple wrappers and operations for convenient, non-time critical logging,
- * when coding needs just a few log messages in the code 
- * (e.g. warning and errors, or during delevopment). 
+ * when coding needs just a few log messages in the code
+ * (e.g. warning and errors, or during delevopment).
  * @see LogFmt
  */
 public class Log {
     private Log() {}
 
     static public void info(String caller, String msg) {
-        log(caller).info(msg) ;
+        log(caller).info(msg);
     }
 
     static public void info(Object caller, String msg) {
-        log(caller.getClass()).info(msg) ;
+        log(caller.getClass()).info(msg);
     }
 
     static public void info(Class<? > cls, String msg) {
-        log(cls).info(msg) ;
+        log(cls).info(msg);
     }
 
     static public void info(Object caller, String msg, Throwable th) {
-        log(caller.getClass()).info(msg, th) ;
+        log(caller.getClass()).info(msg, th);
     }
 
     static public void info(Class<? > cls, String msg, Throwable th) {
-        log(cls).info(msg, th) ;
+        log(cls).info(msg, th);
     }
 
     static public void debug(String caller, String msg) {
-        log(caller).debug(msg) ;
+        log(caller).debug(msg);
     }
 
     static public void debug(Object caller, String msg) {
-        log(caller.getClass()).debug(msg) ;
+        log(caller.getClass()).debug(msg);
     }
 
     static public void debug(Class<? > cls, String msg) {
-        log(cls).debug(msg) ;
+        log(cls).debug(msg);
     }
 
     static public void debug(Object caller, String msg, Throwable th) {
-        log(caller.getClass()).debug(msg, th) ;
+        log(caller.getClass()).debug(msg, th);
     }
 
     static public void debug(Class<? > cls, String msg, Throwable th) {
-        log(cls).debug(msg, th) ;
+        log(cls).debug(msg, th);
     }
 
     static public void warn(String caller, String msg) {
-        log(caller).warn(msg) ;
+        log(caller).warn(msg);
     }
 
     static public void warn(Object caller, String msg) {
-        warn(caller.getClass(), msg) ;
+        warn(caller.getClass(), msg);
     }
 
     static public void warn(Class<? > cls, String msg) {
-        log(cls).warn(msg) ;
+        log(cls).warn(msg);
     }
 
     static public void warn(Object caller, String msg, Throwable th) {
-        warn(caller.getClass(), msg, th) ;
+        warn(caller.getClass(), msg, th);
     }
 
     static public void warn(Class<? > cls, String msg, Throwable th) {
-        log(cls).warn(msg, th) ;
+        log(cls).warn(msg, th);
     }
 
     /** @deprecated Use {@code error}. */
     @Deprecated
     static public void fatal(Object caller, String msg) {
-        fatal(caller.getClass(), msg) ;
+        fatal(caller.getClass(), msg);
     }
 
     /** @deprecated Use {@code error}. */
     @Deprecated
     static public void fatal(Class<? > cls, String msg) {
-        log(cls).error(msg) ;
+        log(cls).error(msg);
     }
 
     /** @deprecated Use {@code error}. */
     @Deprecated
     static public void fatal(Object caller, String msg, Throwable th) {
-        fatal(caller.getClass(), msg, th) ;
+        fatal(caller.getClass(), msg, th);
     }
 
     /** @deprecated Use {@code error}. */
     @Deprecated
     static public void fatal(Class<? > cls, String msg, Throwable th) {
-        log(cls).error(msg, th) ;
+        log(cls).error(msg, th);
     }
 
     /** @deprecated Use {@code error}. */
     @Deprecated
     static public void fatal(String caller, String msg) {
-        log(caller).error(msg) ;
+        log(caller).error(msg);
     }
 
     static private Logger log(Class<? > cls) {
-        return LoggerFactory.getLogger(cls) ;
+        return LoggerFactory.getLogger(cls);
     }
 
     static private Logger log(String loggerName) {
-        return LoggerFactory.getLogger(loggerName) ;
+        return LoggerFactory.getLogger(loggerName);
     }
 
     // Crude limiting of tracked warnings.
@@ -136,7 +136,7 @@ public class Log {
     /** Generate a warning, once(ish) */
     public static void warnOnce(Class<?> cls, String message, Object key) {
         if ( ! warningsDone.contains(key) ) {
-            Log.warn(cls, message) ;
+            Log.warn(cls, message);
             warningsDone.add(key);
             if ( warningsDone.size() > MAX_TRACK )
                 warningsDone.remove(MAX_TRACK);

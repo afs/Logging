@@ -18,11 +18,11 @@
 
 package logging;
 
-import org.slf4j.Logger ;
+import org.slf4j.Logger;
 
 /** Setup and control of logging.
  * A simple abstraction away from log4j or java.util.logging
- * <p> 
+ * <p>
  * Names (case insensitive):
  * <ul>
  * <li>"trace"
@@ -30,31 +30,31 @@ import org.slf4j.Logger ;
  * <li>"info"
  * <li>"warn" or "warning"
  * <li>"error"
- * <li>"off" 
+ * <li>"off"
  * </ul>
- * @see LogFmt 
+ * @see LogFmt
  */
 
 public class LogCtl {
-    
+
     static { setLogging(); }
     private static LoggingSetup loggingSetup = null;
-    
+
     static public void setLogging() {
-        LoggingSetup.setLogging(); 
+        LoggingSetup.setLogging();
         loggingSetup = LoggingSetup.getLoggingSetup();
     }
 
     /** Set the level of a logger.*/
     static public void setLevel(Logger logger, String level) {
-        setLevel(logger.getName(), level) ;
+        setLevel(logger.getName(), level);
     }
 
     /** Set the level of a logger. */
     static public void setLevel(Class<? > logger, String level) {
-        setLevel(logger.getName(), level) ;
+        setLevel(logger.getName(), level);
     }
-    
+
     static public void setLevel(String logger, String level) {
         loggingSetup.setLevel(logger, level);
     }
@@ -63,21 +63,21 @@ public class LogCtl {
      * Turn on a logger (all levels).
      */
     static public void enable(Logger logger) {
-        enable(logger.getName()) ;
+        enable(logger.getName());
     }
 
     /**
      * Turn on a logger (all levels).
      */
     static public void enable(String logger) {
-        setLevel(logger, "all") ;
+        setLevel(logger, "all");
     }
 
     /**
      * Turn on a logger (all levels).
      */
     static public void disable(Logger logger) {
-        setLevel(logger.getName(), "OFF") ;
+        setLevel(logger.getName(), "OFF");
     }
 
     /**
@@ -85,7 +85,7 @@ public class LogCtl {
      * logging provider to Apache common logging or slf4j.
      */
     static public void disable(String logger) {
-        setLevel(logger, "OFF") ;
+        setLevel(logger, "OFF");
     }
 
     /**
@@ -93,7 +93,7 @@ public class LogCtl {
      * provider to Apache common logging or slf4j.
      */
     static public void setInfo(String logger) {
-        setLevel(logger, "info") ;
+        setLevel(logger, "info");
     }
 
     /**
@@ -101,7 +101,7 @@ public class LogCtl {
      * provider to Apache common logging or slf4j.
      */
     static public void setInfo(Class<? > logger) {
-        setLevel(logger.getName(), "info") ;
+        setLevel(logger.getName(), "info");
     }
 
     /**
@@ -109,7 +109,7 @@ public class LogCtl {
      * provider to Apache common logging or slf4j.
      */
     static public void setWarn(String logger) {
-        setLevel(logger, "warn") ;
+        setLevel(logger, "warn");
     }
 
     /**
@@ -117,7 +117,7 @@ public class LogCtl {
      * provider to Apache common logging or slf4j.
      */
     static public void setWarn(Class<? > logger) {
-        setLevel(logger.getName(), "warn") ;
+        setLevel(logger.getName(), "warn");
     }
 
     /**
@@ -125,7 +125,7 @@ public class LogCtl {
      * provider to Apache common logging or slf4j.
      */
     static public void setError(String logger) {
-        setLevel(logger, "error") ;
+        setLevel(logger, "error");
     }
 
     /**
@@ -133,7 +133,7 @@ public class LogCtl {
      * provider to Apache common logging or slf4j.
      */
     static public void setError(Class<? > logger) {
-        setLevel(logger.getName(), "error") ;
+        setLevel(logger.getName(), "error");
     }
 }
 

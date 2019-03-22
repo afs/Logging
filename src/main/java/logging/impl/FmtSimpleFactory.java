@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 public class FmtSimpleFactory implements ILoggerFactory {
 
     private ConcurrentHashMap<String, Logger> loggers = new ConcurrentHashMap<>();
-    
+
     @Override
     public Logger getLogger(String name) {
         return loggers.computeIfAbsent(name, (n)-> new FmtSimple(n));
