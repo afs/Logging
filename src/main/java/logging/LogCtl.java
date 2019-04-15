@@ -42,7 +42,7 @@ public class LogCtl {
 
     static public void setLogging() {
         LoggingSetup.setLogging();
-        loggingSetup = LoggingSetup.getLoggingSetup();
+        loggingSetup = LoggingSetup.config();
     }
 
     /** Set the level of a logger.*/

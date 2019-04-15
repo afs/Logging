@@ -24,6 +24,8 @@ import static logging.PkgLib.exception;
 import java.io.*;
 import java.net.URL;
 
+import org.apache.logging.log4j.core.config.Configurator;
+
 /**
  * Provide encapsulation of the different logging provided when used with slf4j (or used
  * directly). Users of a library that uses slf4j, or the libraries test code, are exposed
@@ -118,7 +120,8 @@ public abstract class LoggingSetup {
 
     private static LoggingSetup theLoggingSetup = new LoggingSetupNoOp();
 
-    public static LoggingSetup getLoggingSetup() {
+    public static LoggingSetup config() {
+        setLogging();
         return theLoggingSetup;
     }
 
@@ -463,21 +466,24 @@ public abstract class LoggingSetup {
         @Override
         public void setLevel(String logger, String levelName) {
             try {
-                org.apache.log4j.Level level = org.apache.log4j.Level.ALL;
+                org.apache.logging.log4j.Level level = org.apache.logging.log4j.Level.ALL;
                 if ( levelName.equalsIgnoreCase("info") )
-                    level = org.apache.log4j.Level.INFO;
+                    level = org.apache.logging.log4j.Level.INFO;
                 else if ( levelName.equalsIgnoreCase("debug") )
-                    level = org.apache.log4j.Level.DEBUG;
+                    level = org.apache.logging.log4j.Level.DEBUG;
                 else if ( levelName.equalsIgnoreCase("trace") )
-                    level = org.apache.log4j.Level.TRACE;
+                    level = org.apache.logging.log4j.Level.TRACE;
                 else if ( levelName.equalsIgnoreCase("warn") || levelName.equalsIgnoreCase("warning") )
-                    level = org.apache.log4j.Level.WARN;
+                    level = org.apache.logging.log4j.Level.WARN;
                 else if ( levelName.equalsIgnoreCase("error") )
-                    level = org.apache.log4j.Level.ERROR;
+                    level = org.apache.logging.log4j.Level.ERROR;
                 else if ( levelName.equalsIgnoreCase("OFF") )
-                    level = org.apache.log4j.Level.OFF;
-                if ( level != null )
-                    org.apache.log4j.LogManager.getLogger(logger).setLevel(level);
+                    level = org.apache.logging.log4j.Level.OFF;
+                if ( level != null ) {
+                    Configurator.setLevel(logger, level);
+                    // You can also set the root logger:
+                    //Configurator.setRootLevel(Level.DEBUG);
+                }
             }
             catch (NoClassDefFoundError ex) {
                 if ( ! log4j2MsgLoggedOnce ) {

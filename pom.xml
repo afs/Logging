@@ -18,7 +18,7 @@
     <ver.log4j>1.2.17</ver.log4j>
     <ver.log4j2>2.11.2</ver.log4j2>
 
-    <!-- Needed fro log4j2 YAML configuration -->
+    <!-- Needed for log4j2 YAML configuration -->
     <ver.jackson>2.9.8</ver.jackson>
   </properties>
 
