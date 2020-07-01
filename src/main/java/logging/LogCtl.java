@@ -18,6 +18,7 @@
 
 package logging;
 
+import logging.setup.LoggingSetup;
 import org.slf4j.Logger;
 
 /** Setup and control of logging.
@@ -41,8 +42,8 @@ public class LogCtl {
     private static LoggingSetup loggingSetup = null;
 
     static public void setLogging() {
-        LoggingSetup.setLogging();
-        loggingSetup = LoggingSetup.config();
+        LoggingSystem.setLogging();
+        loggingSetup = LoggingSystem.config();
     }
 
     /** Set the level of a logger.*/

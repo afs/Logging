@@ -16,21 +16,20 @@
  * limitations under the License.
  */
 
-/**
- * Helper code when using slf4j.
- * <ul>
- * <li>{@link logging.LogFmt} -- Formatted logging using java's printf style formats
- * <li>{@link logging.LogCtl} -- Change logging levels during runtime (e.g. development)
- * <li>{@link logging.LoggingSystem} -- Logging setup, with configuration from file, classpath or a default.
- * <li>{@link logging.Log} -- static logging calls for convenient inclusion of a few
- * messages, e.g warnings and errors.
- * </ul>
- * Logging systems supported:
- * <ul>
- * <li><a href="https://logging.apache.org/log4j/2.x/">Apache Log4j 2</a>
- * <li><a href="https://logging.apache.org/log4j/1.2/">Apache Log4j 1</a> (log4j1 is end-of-life - choose log4j2 if possible)
- * <li>Java Util Logging (JUL)
- * </ul>
- *
- */
-package logging;
+package logging.impl.slf4j18;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+
+public class FmtSimpleFactory implements ILoggerFactory {
+
+    private ConcurrentHashMap<String, Logger> loggers = new ConcurrentHashMap<>();
+
+    @Override
+    public Logger getLogger(String name) {
+        return loggers.computeIfAbsent(name, (n)-> new FmtSimple(n));
+    }
+
+}

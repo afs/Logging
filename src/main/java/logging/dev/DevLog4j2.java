@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package logging;
+package logging.dev;
 
 import java.io.IOException;
 

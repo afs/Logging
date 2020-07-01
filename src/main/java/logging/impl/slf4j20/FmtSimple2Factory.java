@@ -16,21 +16,22 @@
  * limitations under the License.
  */
 
-package logging;
+package logging.impl.slf4j20;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.util.concurrent.ConcurrentHashMap;
 
-/** Utilities */
-/*package*/ class PkgLib {
-    /*package*/ static void exception(IOException ex) {
-        throw new RuntimeException(ex);
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+
+public class FmtSimple2Factory implements ILoggerFactory {
+
+    private ConcurrentHashMap<String, Logger> loggers = new ConcurrentHashMap<>();
+
+    @Override
+    public Logger getLogger(String name) {
+        //return loggers.computeIfAbsent(name, (n)-> new FmtSimple2(n));
+        System.err.println("**** FmtSimple2Factory.getLogger("+name+")");
+        return null;
     }
 
-    /*package*/ static byte[] asUTF8bytes(String s)
-    {
-        try { return s.getBytes("UTF-8"); }
-        catch (UnsupportedEncodingException ex)
-        { throw new RuntimeException("UTF-8 not supported!"); }
-    }
 }

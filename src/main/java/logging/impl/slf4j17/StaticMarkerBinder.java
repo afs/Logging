@@ -16,27 +16,21 @@
  * limitations under the License.
  */
 
-package logging.impl;
+package logging.impl.slf4j17;
 
-import org.slf4j.ILoggerFactory;
-import org.slf4j.spi.LoggerFactoryBinder;
+import org.slf4j.IMarkerFactory;
+import org.slf4j.spi.MarkerFactoryBinder;
 
-// Must be in org.slf4j.impl. to work (slf4j 1.7.x; slf4j 1.8.x uses ServiceLoader<SLF4JServiceProvider>)
-public class StaticLoggerBinder implements LoggerFactoryBinder {
+public class StaticMarkerBinder implements MarkerFactoryBinder {
 
-  private static StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
+    @Override
+    public IMarkerFactory getMarkerFactory() {
+        return null;
+    }
 
-  public static final StaticLoggerBinder getSingleton() {
-      return SINGLETON;
-  }
+    @Override
+    public String getMarkerFactoryClassStr() {
+        return null;
+    }
 
-  @Override
-  public ILoggerFactory getLoggerFactory() {
-      return new FmtSimpleFactory();
-  }
-
-  @Override
-  public String getLoggerFactoryClassStr() {
-      return FmtSimpleFactory.class.getName();
-  }
 }

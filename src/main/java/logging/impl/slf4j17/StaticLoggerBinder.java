@@ -16,35 +16,28 @@
  * limitations under the License.
  */
 
-package org.slf4j.impl;
+package logging.impl.slf4j17;
 
 import logging.impl.slf4j18.FmtSimpleFactory;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
-/**
- * A SLF4J {@linkplain LoggerFactoryBinder} that goes to
- * {@link logging.impl.slf4j18.FmtSimpleFactory}.
- */
-public class StaticLoggerBinder_ implements LoggerFactoryBinder {
-    // Rename to activate.
-    private static StaticLoggerBinder_ SINGLETON = new StaticLoggerBinder_();
+// Must be in org.slf4j.impl. to work (slf4j 1.7.x; slf4j 1.8.x uses ServiceLoader<SLF4JServiceProvider>)
+public class StaticLoggerBinder implements LoggerFactoryBinder {
 
-    public static final StaticLoggerBinder_ getSingleton() {
-        return SINGLETON;
-    }
+  private static StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
 
-    // SLF4J checking mechanism.
-//    // to avoid constant folding by the compiler, this field must *not* be final
-//    public static String REQUESTED_API_VERSION = "1.7.0"; // !final
+  public static final StaticLoggerBinder getSingleton() {
+      return SINGLETON;
+  }
 
-    @Override
-    public ILoggerFactory getLoggerFactory() {
-        return new FmtSimpleFactory();
-    }
+  @Override
+  public ILoggerFactory getLoggerFactory() {
+      return new FmtSimpleFactory();
+  }
 
-    @Override
-    public String getLoggerFactoryClassStr() {
-        return FmtSimpleFactory.class.getName();
-    }
+  @Override
+  public String getLoggerFactoryClassStr() {
+      return FmtSimpleFactory.class.getName();
+  }
 }

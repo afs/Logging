@@ -18,9 +18,7 @@
 
 package org.slf4j.impl;
 
-//public class StaticLoggerBinder_ {}
-
-import logging.impl.FmtSimpleFactory;
+import logging.impl.slf4j18.FmtSimpleFactory;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 

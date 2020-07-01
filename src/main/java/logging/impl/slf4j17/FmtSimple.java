@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package logging.impl;
+package logging.impl.slf4j17;
 
 import org.slf4j.helpers.MarkerIgnoringBase;
 
@@ -24,6 +24,7 @@ import org.slf4j.helpers.MarkerIgnoringBase;
  *  Unlike proper SLF4J, the format is a java-style format.
  *  Less simple than the {@code org.slf4j.impl.SimpleLogger}
  */
+
 public class FmtSimple extends MarkerIgnoringBase {
 
     public FmtSimple(String n) {}
@@ -74,7 +75,7 @@ public class FmtSimple extends MarkerIgnoringBase {
     }
 
     @Override
-    public void info(String msg) { System.out.println("** "+ msg); }
+    public void info(String msg) { System.out.println("[Simple] "+ msg); }
 
     @Override
     public void info(String format, Object arg) {}

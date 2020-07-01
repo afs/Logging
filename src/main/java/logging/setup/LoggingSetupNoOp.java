@@ -16,20 +16,36 @@
  * limitations under the License.
  */
 
-package logging.impl;
+package logging.setup;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.slf4j.ILoggerFactory;
-import org.slf4j.Logger;
-
-public class FmtSimpleFactory implements ILoggerFactory {
-
-    private ConcurrentHashMap<String, Logger> loggers = new ConcurrentHashMap<>();
-
+/** Setup for when we don't do anything */
+public class LoggingSetupNoOp extends LoggingSetup {
     @Override
-    public Logger getLogger(String name) {
-        return loggers.computeIfAbsent(name, (n)-> new FmtSimple(n));
+    protected String getDisplayName() {
+        return "NoOp";
     }
 
+    @Override
+    protected String[] getLoggingSetupFilenames() {
+        return new String[0];
+    }
+
+    @Override
+    protected String getSystemProperty() {
+        return null;
+    }
+
+    @Override
+    protected String getDefaultString() {
+        return null;
+    }
+
+    @Override
+    protected void initFromInputStream(InputStream inputStream, String name) throws IOException {}
+
+    @Override
+    public void setLevel(String logger, String level) {}
 }
