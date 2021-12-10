@@ -31,5 +31,4 @@ public class FmtSimpleFactory implements ILoggerFactory {
     public Logger getLogger(String name) {
         return loggers.computeIfAbsent(name, (n)-> new FmtSimple(n));
     }
-
 }

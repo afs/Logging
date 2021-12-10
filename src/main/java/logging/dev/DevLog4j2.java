@@ -25,6 +25,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 public class DevLog4j2 {
+    // Regroup.
+    // FusekiLogging and LogCtl can be merged.
+    
     public static void main(String...a) throws IOException {
 //        InputStream in = new FileInputStream("x-log4j2.yaml");
 //        ConfigurationSource source = new ConfigurationSource(in);
