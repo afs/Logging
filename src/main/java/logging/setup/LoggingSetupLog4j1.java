@@ -18,67 +18,69 @@
 
 package logging.setup;
 
-import java.io.IOException;
-import java.io.InputStream;
+public class LoggingSetupLog4j1 {}
 
-import logging.LoggingDefaults;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.xml.DOMConfigurator;
-
-/** Log4j1 setup */
-public class LoggingSetupLog4j1 extends LoggingSetup {
-
-    @Override
-    protected String getDisplayName() {
-        return "Log4j1";
-    }
-
-    @Override
-    protected void initFromInputStream(InputStream inputStream, String name) throws IOException {
-        if ( name == null ) {
-            org.apache.log4j.PropertyConfigurator.configure(inputStream);
-            return;
-        }
-        if ( name.endsWith(".properties") )
-            org.apache.log4j.PropertyConfigurator.configure(inputStream);
-        else if ( name.endsWith(".xml") ) {
-            new DOMConfigurator().doConfigure(inputStream, LogManager.getLoggerRepository());
-        }
-    }
-
-    @Override
-    protected String[] getLoggingSetupFilenames() {
-        return new String[] {"log4j.properties"};
-    }
-
-    @Override
-    protected String getSystemProperty() {
-        return "log4j.configuration";
-    }
-
-    @Override
-    protected String getDefaultString() {
-        return LoggingDefaults.defaultLog4j1;
-    }
-
-    private boolean log4j1MsgLoggedOnce = false;
-    @Override
-    public void setLevel(String logger, String levelName) {
-        org.apache.log4j.Level level = org.apache.log4j.Level.ALL;
-        if ( levelName == null )
-            level = null;
-        else if ( levelName.equalsIgnoreCase("info") )
-            level = org.apache.log4j.Level.INFO;
-        else if ( levelName.equalsIgnoreCase("debug") )
-            level = org.apache.log4j.Level.DEBUG;
-        else if ( levelName.equalsIgnoreCase("trace") )
-            level = org.apache.log4j.Level.TRACE;
-        else if ( levelName.equalsIgnoreCase("warn") || levelName.equalsIgnoreCase("warning") )
-            level = org.apache.log4j.Level.WARN;
-        else if ( levelName.equalsIgnoreCase("error") || levelName.equalsIgnoreCase("severe") )
-            level = org.apache.log4j.Level.ERROR;
-        else if ( levelName.equalsIgnoreCase("OFF") )
-            level = org.apache.log4j.Level.OFF;
-        org.apache.log4j.LogManager.getLogger(logger).setLevel(level);
-    }
-}
+//import java.io.IOException;
+//import java.io.InputStream;
+//
+//import logging.LoggingDefaults;
+//import org.apache.log4j.LogManager;
+//import org.apache.log4j.xml.DOMConfigurator;
+//
+///** Log4j1 setup */
+//public class LoggingSetupLog4j1 extends LoggingSetup {
+//
+//    @Override
+//    protected String getDisplayName() {
+//        return "Log4j1";
+//    }
+//
+//    @Override
+//    protected void initFromInputStream(InputStream inputStream, String name) throws IOException {
+//        if ( name == null ) {
+//            org.apache.log4j.PropertyConfigurator.configure(inputStream);
+//            return;
+//        }
+//        if ( name.endsWith(".properties") )
+//            org.apache.log4j.PropertyConfigurator.configure(inputStream);
+//        else if ( name.endsWith(".xml") ) {
+//            new DOMConfigurator().doConfigure(inputStream, LogManager.getLoggerRepository());
+//        }
+//    }
+//
+//    @Override
+//    protected String[] getLoggingSetupFilenames() {
+//        return new String[] {"log4j.properties"};
+//    }
+//
+//    @Override
+//    protected String getSystemProperty() {
+//        return "log4j.configuration";
+//    }
+//
+//    @Override
+//    protected String getDefaultString() {
+//        return LoggingDefaults.defaultLog4j1;
+//    }
+//
+//    private boolean log4j1MsgLoggedOnce = false;
+//    @Override
+//    public void setLevel(String logger, String levelName) {
+//        org.apache.log4j.Level level = org.apache.log4j.Level.ALL;
+//        if ( levelName == null )
+//            level = null;
+//        else if ( levelName.equalsIgnoreCase("info") )
+//            level = org.apache.log4j.Level.INFO;
+//        else if ( levelName.equalsIgnoreCase("debug") )
+//            level = org.apache.log4j.Level.DEBUG;
+//        else if ( levelName.equalsIgnoreCase("trace") )
+//            level = org.apache.log4j.Level.TRACE;
+//        else if ( levelName.equalsIgnoreCase("warn") || levelName.equalsIgnoreCase("warning") )
+//            level = org.apache.log4j.Level.WARN;
+//        else if ( levelName.equalsIgnoreCase("error") || levelName.equalsIgnoreCase("severe") )
+//            level = org.apache.log4j.Level.ERROR;
+//        else if ( levelName.equalsIgnoreCase("OFF") )
+//            level = org.apache.log4j.Level.OFF;
+//        org.apache.log4j.LogManager.getLogger(logger).setLevel(level);
+//    }
+//}

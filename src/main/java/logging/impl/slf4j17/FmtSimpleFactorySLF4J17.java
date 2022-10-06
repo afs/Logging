@@ -16,19 +16,20 @@
  * limitations under the License.
  */
 
-package logging.impl.slf4j18;
+package logging.impl.slf4j17;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 
-public class FmtSimpleFactory implements ILoggerFactory {
+public class FmtSimpleFactorySLF4J17 implements ILoggerFactory {
 
     private ConcurrentHashMap<String, Logger> loggers = new ConcurrentHashMap<>();
 
     @Override
     public Logger getLogger(String name) {
-        return loggers.computeIfAbsent(name, (n)-> new FmtSimple(n));
+        return loggers.computeIfAbsent(name, (n)-> new FmtSimpleSLF4J17(n));
     }
+
 }

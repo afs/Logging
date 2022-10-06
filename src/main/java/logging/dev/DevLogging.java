@@ -20,7 +20,6 @@ package logging.dev;
 
 import logging.LoggingSystem;
 import logging.setup.LoggingSetupJUL;
-import logging.setup.LoggingSetupLog4j1;
 
 public class DevLogging {
 
@@ -28,10 +27,10 @@ public class DevLogging {
      * Provided:
      *     Better diagnostics
      *     "Hunt the setup file", not -D
-     *     Built-in defaults. 
-     *     
+     *     Built-in defaults.
+     *
      * Is this slf4j 1.8 (ServiceLoader) dependent? Split out.
-     *    Two+ maven modules for testing. 
+     *    Two+ maven modules for testing.
      */
 
     //** Init - not getDefaultString - just call an "default init"
@@ -84,7 +83,7 @@ public class DevLogging {
         LOG0.info("Information:JUL");
 
         System.exit(0);
-        
+
         //LoggingSetup.logSetup(true);
 //          org.slf4j.Logger x = org.slf4j.LoggerFactory.getLogger("FOO");
 //          // org.slf4j.impl.Log4jLoggerAdapater or org.slf4j.impl.JDK14LoggerAdapter
@@ -99,15 +98,6 @@ public class DevLogging {
 //        System.err.println("stderr");System.err.flush();
 
         LoggingSystem.allowLoggingReset(true);
-        // Dev - direct to Log4j1
-        if ( true ) {
-            // Does not rebind slf4j1
-            System.err.println("Reset - log4j");
-            new LoggingSetupLog4j1()
-                .setup();
-            org.apache.log4j.Logger LOG1 = org.apache.log4j.Logger.getLogger("LOG4J1");
-            LOG1.info("Information:L4J1");
-        }
         // Dev - direct to JUL.
         if ( true ) {
             System.err.println("Reset - JUL");

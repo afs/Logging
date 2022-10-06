@@ -75,10 +75,10 @@ import org.slf4j.spi.SLF4JServiceProvider;
 
 public class LoggingSystem {
     // <<<< Log logging
-    
+
     private static boolean logLogging         = false;
     private static PrintStream logLogger = System.err;
-    
+
     /** Set whether to log the logging setup. */
     public static void logLoggingSetup(boolean logSetup) {
         logLogging = logSetup;
@@ -101,7 +101,7 @@ public class LoggingSystem {
     }
 
     // >>>> Log logging
-    
+
     private static boolean allowLoggingReset  = true;
 
     private static Object lock = new Object();
@@ -163,20 +163,20 @@ public class LoggingSystem {
     }
 
     private static void setLoggingInternal() {
-        setLoggingInternal_slf4j18();
+        setLoggingInternal_slf4j20();
         //setLoggingInternal_slf4j17();
     }
-    
+
     // ==== Support for slf4j 1.8
-    
-    private static void setLoggingInternal_slf4j18() {
+
+    private static void setLoggingInternal_slf4j20() {
         if ( loggingInitialized )
             return;
         if ( !allowLoggingReset )
             return;
         loggingInitialized = true;
         allowLoggingReset = false;
-        
+
         List<ServiceLoader.Provider<SLF4JServiceProvider>> providers = search();
 
         // Discover the binding for logging
@@ -185,7 +185,7 @@ public class LoggingSystem {
             logLogging("slf4j-simple logging found");
             return;
         }
-        
+
         // Local: like slf4j simple but with java-style formatting
         boolean hasFmtSimple = checkForFmtSimple(providers);
 
@@ -216,8 +216,10 @@ public class LoggingSystem {
         }
 
         LoggingSetup loggingSetup = null;
-        if ( hasLog4j1 )
-            loggingSetup = new LoggingSetupLog4j1();
+        if ( hasLog4j1 ) {
+            //loggingSetup = new LoggingSetupLog4j1();
+            throw new RuntimeException("log4j v1 is not secure. No longer supported");
+        }
         if ( hasLog4j2 )
             loggingSetup = new LoggingSetupLog4j2();
         if ( hasJUL )
@@ -236,15 +238,15 @@ public class LoggingSystem {
     // slf4j 1.8.x uses ServiceLoader
     // Support for slf4j v1.8.x, v2.0.x.
     // slf4j uses java.util.ServiceLoader for "org.slf4j.spi.SLF4JServiceProvider"
-    
-    
+
+
     private static List<ServiceLoader.Provider<SLF4JServiceProvider>> search() {
-        ServiceLoader<SLF4JServiceProvider> sl = 
+        ServiceLoader<SLF4JServiceProvider> sl =
             ServiceLoader.load(SLF4JServiceProvider.class, LoggingSystem.class.getClassLoader()) ;
         List<ServiceLoader.Provider<org.slf4j.spi.SLF4JServiceProvider>> x = sl.stream().collect(Collectors.toList());
         return x;
     }
-    
+
     private static boolean checkForClassServiceLoader(List<ServiceLoader.Provider<SLF4JServiceProvider>> providers, String clsName) {
         for ( ServiceLoader.Provider<SLF4JServiceProvider> p : providers ) {
             String providerClsName = p.get().getClass().getName();
@@ -253,7 +255,7 @@ public class LoggingSystem {
         }
         return false;
     }
-    
+
     private static boolean checkForSimple(List<ServiceLoader.Provider<SLF4JServiceProvider>> providers) {
         return checkForClassServiceLoader(providers, "org.slf4j.impl.SimpleLogger");
     }
@@ -300,9 +302,9 @@ public class LoggingSystem {
     private static boolean checkForJUL(List<ServiceLoader.Provider<SLF4JServiceProvider>> providers) {
         return checkForClass("org.slf4j.impl.JDK14LoggerAdapter");
     }
-    
+
     // ==== Support for slf4j v1.7.0
-    
+
     private static void setLoggingInternal_slf4j17() {
         if ( loggingInitialized )
             return;
@@ -310,7 +312,7 @@ public class LoggingSystem {
             return;
         loggingInitialized = true;
         allowLoggingReset = false;
-        
+
         // Discover the binding for logging
         if ( checkForSimple_slf4j17() ) {
             // No specific setup.
@@ -318,7 +320,7 @@ public class LoggingSystem {
             return;
         }
 
-        
+
         // Local: like slf4j simple but with java-style formatting
         boolean hasFmtSimple = checkForFmtSimple_slf4j17();
 
@@ -349,8 +351,8 @@ public class LoggingSystem {
         }
 
         LoggingSetup loggingSetup = null;
-        if ( hasLog4j1 )
-            loggingSetup = new LoggingSetupLog4j1();
+//        if ( hasLog4j1 )
+//            loggingSetup = new LoggingSetupLog4j1();
         if ( hasLog4j2 )
             loggingSetup = new LoggingSetupLog4j2();
         if ( hasJUL )
@@ -366,13 +368,13 @@ public class LoggingSystem {
         theLoggingSetup = loggingSetup;
     }
 
-    
+
     //private static final boolean hasLog4j1 = checkForClass("org.apache.log4j.Level");
     //private static final boolean hasLog4j2 = checkForClass("org.apache.logging.log4j.Level");
 
     // Need both "org.slf4j.impl.Log4jLoggerAdapater" and "org.apache.log4j.Logger"
     private static boolean checkForLog4J1_slf4j17() {
-        // Checks for both jars - "log4j:log4j" and "org.slf4j:slf4j-log4j12"  
+        // Checks for both jars - "log4j:log4j" and "org.slf4j:slf4j-log4j12"
         boolean bLog4j = checkForClass("org.apache.log4j.Logger");
         boolean bLog4jBinding = checkForClass("org.slf4j.impl.Log4jLoggerAdapter");
         if ( bLog4j && bLog4jBinding )
@@ -392,7 +394,7 @@ public class LoggingSystem {
 
     // Need both "org.slf4j.impl.Log4jLoggerAdapater" and "org.apache.logging.log4j.Logger"
     private static boolean checkForLog4J2_slf4j17() {
-        // Checks for both jars - "org.apache.logging.log4j-core" and "org.apache.logging.log4j:log4j-slf4j-impl".  
+        // Checks for both jars - "org.apache.logging.log4j-core" and "org.apache.logging.log4j:log4j-slf4j-impl".
         boolean bLog4j = checkForClass("org.apache.logging.log4j.Logger");
         boolean bLog4jBinding = checkForClass("org.apache.logging.slf4j.Log4jLoggerFactory");
         if ( bLog4j && bLog4jBinding )
@@ -422,7 +424,7 @@ public class LoggingSystem {
         return checkForClass("logging.impl.FmtSimpleFactory");
     }
 
-    /** Check for a class on the classpath */ 
+    /** Check for a class on the classpath */
     private static boolean checkForClass(String className) {
         try {
             Class.forName(className);

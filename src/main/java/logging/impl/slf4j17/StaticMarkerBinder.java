@@ -21,6 +21,7 @@ package logging.impl.slf4j17;
 import org.slf4j.IMarkerFactory;
 import org.slf4j.spi.MarkerFactoryBinder;
 
+@SuppressWarnings("deprecation")
 public class StaticMarkerBinder implements MarkerFactoryBinder {
 
     @Override

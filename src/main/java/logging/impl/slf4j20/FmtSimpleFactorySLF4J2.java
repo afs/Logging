@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 
-public class FmtSimple2Factory implements ILoggerFactory {
+public class FmtSimpleFactorySLF4J2 implements ILoggerFactory {
 
     private ConcurrentHashMap<String, Logger> loggers = new ConcurrentHashMap<>();
 

@@ -18,13 +18,14 @@
 
 package org.slf4j.impl;
 
-import logging.impl.slf4j18.FmtSimpleFactory;
+import logging.impl.slf4j17.FmtSimpleFactorySLF4J17;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
 /**
  * A SLF4J {@linkplain LoggerFactoryBinder} that to log4j if possible else JUL.
  */
+@SuppressWarnings("deprecation")
 public class StaticLoggerBinderAuto implements LoggerFactoryBinder {
     // Rename to activate.
     private static StaticLoggerBinderAuto SINGLETON = new StaticLoggerBinderAuto();
@@ -43,11 +44,11 @@ public class StaticLoggerBinderAuto implements LoggerFactoryBinder {
 
     @Override
     public ILoggerFactory getLoggerFactory() {
-        return new FmtSimpleFactory();
+        return new FmtSimpleFactorySLF4J17();
     }
 
     @Override
     public String getLoggerFactoryClassStr() {
-        return FmtSimpleFactory.class.getName();
+        return FmtSimpleFactorySLF4J17.class.getName();
     }
 }

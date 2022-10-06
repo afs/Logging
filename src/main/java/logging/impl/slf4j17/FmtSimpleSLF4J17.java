@@ -25,9 +25,10 @@ import org.slf4j.helpers.MarkerIgnoringBase;
  *  Less simple than the {@code org.slf4j.impl.SimpleLogger}
  */
 
-public class FmtSimple extends MarkerIgnoringBase {
+@SuppressWarnings("deprecation")
+public class FmtSimpleSLF4J17 extends MarkerIgnoringBase {
 
-    public FmtSimple(String n) {}
+    public FmtSimpleSLF4J17(String n) {}
 
     @Override
     public boolean isTraceEnabled() {

@@ -19,7 +19,7 @@
 package logging.impl.slf4j20;
 
 // slf4j 2.0.x
-public class FmtSimple2 {}
+public class FmtSimpleSLF4J2 {}
 
 //import org.slf4j.Marker;
 //import org.slf4j.event.Level;

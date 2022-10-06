@@ -19,28 +19,25 @@
 package logging.impl;
 
 import logging.LoggingSystem;
-import logging.impl.slf4j18.FmtSimpleFactory;
+import logging.impl.slf4j20.FmtSimpleFactorySLF4J2;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.IMarkerFactory;
 import org.slf4j.helpers.BasicMarkerFactory;
 import org.slf4j.helpers.NOPMDCAdapter;
-import org.slf4j.helpers.NOPServiceProvider;
 import org.slf4j.spi.MDCAdapter;
 import org.slf4j.spi.SLF4JServiceProvider;
 
+/** For SLF4J 2.x */
 public class SLF4JServiceProviderSimple implements SLF4JServiceProvider {
 
-    // slf4j 2.0.x
-    //private ILoggerFactory loggerFactory = new FmtSimple2Factory();
-    // slf4j 1.8.x
-    private ILoggerFactory loggerFactory = new FmtSimpleFactory();
+    private ILoggerFactory loggerFactory = new FmtSimpleFactorySLF4J2();
 
     private IMarkerFactory markerFactory =  new BasicMarkerFactory();
     private MDCAdapter mdcAdapter =  new NOPMDCAdapter();
 
     @Override
     public ILoggerFactory getLoggerFactory() {
-        
+
         return loggerFactory;
     }
 
@@ -55,17 +52,17 @@ public class SLF4JServiceProviderSimple implements SLF4JServiceProvider {
     }
 
     @Override
-    public String getRequesteApiVersion() {
-        return NOPServiceProvider.REQUESTED_API_VERSION;
-    }
-
-    @Override
     public void initialize() {
         LoggingSystem.logLogging("Load SLF4JServiceProviderSimple");
     }
-    
+
+    @Override
+    public String getRequestedApiVersion() {
+        return null;
+    }
+
     // slf4j will print if it finds multiple providers.
-    // Leave to the default so all output looks similar. 
+    // Leave to the default so all output looks similar.
 //    @Override
 //    public String toString() {
 //        return this.getClass().getName();
